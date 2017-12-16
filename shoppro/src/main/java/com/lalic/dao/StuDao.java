@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface StuDao extends JpaRepository<Stu,String>,JpaSpecificationExecutor<Stu> {
+public interface StuDao extends JpaRepository<Stu, String>, JpaSpecificationExecutor<Stu> {
 
-    @Query(value = "SELECT * FROM stu",nativeQuery = true)
+    @Query(value = "SELECT * FROM stu", nativeQuery = true)
     List<Stu> getStu();
 
 }
