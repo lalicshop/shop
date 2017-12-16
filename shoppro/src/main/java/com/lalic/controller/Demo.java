@@ -18,6 +18,7 @@ public class Demo {
 
     @RequestMapping(value = "/search")
     public List<Stu> greeting(String name) {
+        //this is test
         return service.getStu();
     }
 
