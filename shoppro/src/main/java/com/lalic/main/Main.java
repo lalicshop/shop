@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("com.lalic.dao")
 public class Main {
     public static void main(String[] args) {
-        //5655
         SpringApplication.run(Main.class, args);
     }
 
