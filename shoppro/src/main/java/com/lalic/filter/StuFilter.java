@@ -1,5 +1,8 @@
 package com.lalic.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -12,19 +15,24 @@ import javax.servlet.annotation.WebFilter;
 
 @WebFilter(filterName = "noName", urlPatterns = "/*")
 public class StuFilter implements Filter {
+
+    private final static Logger logger = LoggerFactory.getLogger(StuFilter.class);
+
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("filter init");
+        logger.info("filter init");
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("filter doFilter");
+        logger.info("filter doFilter");
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
     public void destroy() {
+        logger.info("filter destroy");
         System.out.println("filter destroy");
     }
 }
