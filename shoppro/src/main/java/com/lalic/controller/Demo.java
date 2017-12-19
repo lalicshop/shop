@@ -1,9 +1,9 @@
 package com.lalic.controller;
 
 import com.lalic.dao.StuLikeDao;
-import com.lalic.iml.StuIml;
 import com.lalic.model.Stu;
 import com.lalic.model.StuLike;
+import com.lalic.service.StuService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class Demo {
     private final static Logger logger = LoggerFactory.getLogger(Demo.class);
 
     @Autowired
-    StuIml service;
+    StuService service;
 
     @Autowired
     StuLikeDao dao;
