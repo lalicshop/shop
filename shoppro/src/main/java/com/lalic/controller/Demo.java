@@ -1,8 +1,10 @@
 package com.lalic.controller;
 
 import com.lalic.dao.StuLikeDao;
+import com.lalic.model.ProductModel;
 import com.lalic.model.Stu;
 import com.lalic.model.StuLike;
+import com.lalic.service.ProductService;
 import com.lalic.service.StuService;
 
 import org.slf4j.Logger;
@@ -24,6 +26,9 @@ public class Demo {
     @Autowired
     StuLikeDao dao;
 
+    @Autowired
+    ProductService productService;
+
     @RequestMapping(value = "/search")
     public List<Stu> greeting(String name) {
         logger.info("greeting");
@@ -34,6 +39,12 @@ public class Demo {
     public List<StuLike> getlike(String name) {
         logger.info("getlike");
         return dao.getStuLike();
+    }
+
+    @RequestMapping(value = "/products")
+    public List<ProductModel> getAllProduct() {
+        logger.info("getAllProduct");
+        return productService.getAllProducts();
     }
 
 }
