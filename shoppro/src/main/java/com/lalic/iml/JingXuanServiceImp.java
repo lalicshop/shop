@@ -1,7 +1,7 @@
 package com.lalic.iml;
 
 import com.lalic.dao.ProductDao;
-import com.lalic.model.ProductModel;
+import com.lalic.entity.ProductModel;
 import com.lalic.service.JingXuanService;
 
 import org.springframework.beans.factory.annotation.Autowired;

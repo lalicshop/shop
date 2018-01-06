@@ -1,20 +1,17 @@
-package com.lalic.model;
+package com.lalic.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity(name = "shop_lunbo")
-@Table(name = "shop_lunbo")
-public class LunBoRespData {
+@Entity(name = "shop_jingxuan")
+@Table(name = "shop_jingxuan")
+public class JingXuanModel {
 
     @Id
     @Column(name = "productid")
     private String productid;
-
-    @Column(name = "imgurl")
-    private String imgurl;
 
     public String getProductid() {
         return productid;
@@ -24,11 +21,4 @@ public class LunBoRespData {
         this.productid = productid;
     }
 
-    public String getImgurl() {
-        return imgurl;
-    }
-
-    public void setImgurl(String imgurl) {
-        this.imgurl = imgurl;
-    }
 }

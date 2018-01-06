@@ -1,7 +1,7 @@
 package com.lalic.iml;
 
 import com.lalic.dao.LunBoDao;
-import com.lalic.model.LunBoRespData;
+import com.lalic.entity.LunBoModel;
 import com.lalic.service.LunBoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class LunBoServiceImp implements LunBoService {
     LunBoDao lunBoDao;
 
     @Override
-    public List<LunBoRespData> getLunBo() {
+    public List<LunBoModel> getLunBo() {
         return lunBoDao.getLunBo();
     }
 }

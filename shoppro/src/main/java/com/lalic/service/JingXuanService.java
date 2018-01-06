@@ -1,6 +1,6 @@
 package com.lalic.service;
 
-import com.lalic.model.ProductModel;
+import com.lalic.entity.ProductModel;
 
 import java.util.List;
 

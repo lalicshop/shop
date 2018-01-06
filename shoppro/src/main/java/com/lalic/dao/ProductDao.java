@@ -1,6 +1,6 @@
 package com.lalic.dao;
 
-import com.lalic.model.ProductModel;
+import com.lalic.entity.ProductModel;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
