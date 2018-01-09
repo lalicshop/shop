@@ -14,9 +14,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
 @WebFilter(filterName = "noName", urlPatterns = "/*")
-public class StuFilter implements Filter {
+public class ShopFilter implements Filter {
 
-    private final static Logger logger = LoggerFactory.getLogger(StuFilter.class);
+    private final static Logger logger = LoggerFactory.getLogger(ShopFilter.class);
 
 
     @Override

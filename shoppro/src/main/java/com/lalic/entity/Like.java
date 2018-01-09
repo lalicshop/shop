@@ -1,4 +1,4 @@
-package com.lalic.model;
+package com.lalic.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

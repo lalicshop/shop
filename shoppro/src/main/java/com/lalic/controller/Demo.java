@@ -2,8 +2,8 @@ package com.lalic.controller;
 
 import com.lalic.dao.StuLikeDao;
 import com.lalic.entity.ProductModel;
-import com.lalic.model.Stu;
-import com.lalic.model.StuLike;
+import com.lalic.entity.Stu;
+import com.lalic.entity.StuLike;
 import com.lalic.service.ProductService;
 import com.lalic.service.StuService;
 

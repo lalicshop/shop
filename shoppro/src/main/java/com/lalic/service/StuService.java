@@ -1,9 +1,11 @@
 package com.lalic.service;
 
+import com.lalic.entity.Stu;
+
 import java.util.List;
 
 
 public interface StuService {
 
-    List<com.lalic.model.Stu> getStu();
+    List<Stu> getStu();
 }

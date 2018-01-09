@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan(value = {"com.lalic"})
-@EntityScan("com.lalic.model")
+@EntityScan("com.lalic.entity")
 @EnableJpaRepositories("com.lalic.dao")
 @ServletComponentScan(basePackages = "com.lalic")
 public class Main {

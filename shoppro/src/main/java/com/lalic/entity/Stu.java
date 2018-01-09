@@ -1,19 +1,20 @@
-package com.lalic.model;
+package com.lalic.entity;
 
-import java.io.Serializable;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity
-public class StuLike implements Serializable {
+@Entity(name = "stu")
+@Table(name = "stu")
+public class Stu {
 
     @Id
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "age")
     private int age;
-
-    private String like;
 
     public String getName() {
         return name;
@@ -29,13 +30,5 @@ public class StuLike implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public String getLike() {
-        return like;
-    }
-
-    public void setLike(String like) {
-        this.like = like;
     }
 }

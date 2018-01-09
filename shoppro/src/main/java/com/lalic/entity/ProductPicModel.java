@@ -13,7 +13,7 @@ public class ProductPicModel {
     @Column(name = "picid")
     private String picid;
 
-    @Column(name = "picid")
+    @Column(name = "productid")
     private String productid;
 
     @Column(name = "sort")

@@ -1,6 +1,6 @@
 package com.lalic.dao;
 
-import com.lalic.model.Stu;
+import com.lalic.entity.Stu;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

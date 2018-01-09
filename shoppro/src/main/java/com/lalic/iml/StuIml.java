@@ -1,6 +1,7 @@
 package com.lalic.iml;
 
 import com.lalic.dao.StuDao;
+import com.lalic.entity.Stu;
 import com.lalic.service.StuService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class StuIml implements StuService {
     StuDao dao;
 
     @Override
-    public List<com.lalic.model.Stu> getStu() {
+    public List<Stu> getStu() {
         return dao.getStu();
     }
 }
