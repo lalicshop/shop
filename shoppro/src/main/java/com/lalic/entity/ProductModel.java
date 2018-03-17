@@ -13,14 +13,14 @@ public class ProductModel {
     @Column(name = "productid")
     private String productid;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "shortname")
+    private String shortname;
 
-    @Column(name = "fleshpart")
-    private String fleshpart;
+    @Column(name = "detailname")
+    private String detailname;
 
-    @Column(name = "inventory")
-    private String inventory;
+    @Column(name = "shortdescription")
+    private String shortdescription;
 
     @Column(name = "buyprice")
     private double buyprice;
@@ -28,18 +28,38 @@ public class ProductModel {
     @Column(name = "rentprice")
     private double rentprice;
 
-    @Column(name = "salecount")
-    private int salecount;
+    @Column(name = "size")
+    private String size;
 
-    @Column(name = "mainpic")
-    private String mainpic;
+    @Column(name = "mess")
+    private String mess;
 
     @Column(name = "attr")
     private String attr;
 
+    @Column(name = "aftersale")
+    private String aftersale;
+
+    @Column(name = "mainpic")
+    private String mainpic;
+
+    @Column(name = "subpic")
+    private String subpic;
+
+    @Column(name = "detailpic")
+    private String detailpic;
+
+    @Column(name = "fleshpart")
+    private String fleshpart;
+
+    @Column(name = "inventory")
+    private String inventory;
+
+    @Column(name = "salecount")
+    private int salecount;
+
     @Column(name = "tag")
     private String tag;
-
 
     public String getProductid() {
         return productid;
@@ -49,28 +69,36 @@ public class ProductModel {
         this.productid = productid;
     }
 
-    public String getName() {
-        return name;
+    public String getShortname() {
+        return shortname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setShortname(String shortname) {
+        this.shortname = shortname;
     }
 
-    public String getFleshpart() {
-        return fleshpart;
+    public String getDetailname() {
+        return detailname;
     }
 
-    public void setFleshpart(String fleshpart) {
-        this.fleshpart = fleshpart;
+    public String getSubpic() {
+        return subpic;
     }
 
-    public String getInventory() {
-        return inventory;
+    public void setSubpic(String subpic) {
+        this.subpic = subpic;
     }
 
-    public void setInventory(String inventory) {
-        this.inventory = inventory;
+    public void setDetailname(String detailname) {
+        this.detailname = detailname;
+    }
+
+    public String getShortdescription() {
+        return shortdescription;
+    }
+
+    public void setShortdescription(String shortdescription) {
+        this.shortdescription = shortdescription;
     }
 
     public double getBuyprice() {
@@ -89,12 +117,36 @@ public class ProductModel {
         this.rentprice = rentprice;
     }
 
-    public int getSalecount() {
-        return salecount;
+    public String getSize() {
+        return size;
     }
 
-    public void setSalecount(int salecount) {
-        this.salecount = salecount;
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getMess() {
+        return mess;
+    }
+
+    public void setMess(String mess) {
+        this.mess = mess;
+    }
+
+    public String getAttr() {
+        return attr;
+    }
+
+    public void setAttr(String attr) {
+        this.attr = attr;
+    }
+
+    public String getAftersale() {
+        return aftersale;
+    }
+
+    public void setAftersale(String aftersale) {
+        this.aftersale = aftersale;
     }
 
     public String getMainpic() {
@@ -105,12 +157,36 @@ public class ProductModel {
         this.mainpic = mainpic;
     }
 
-    public String getAttr() {
-        return attr;
+    public String getDetailpic() {
+        return detailpic;
     }
 
-    public void setAttr(String attr) {
-        this.attr = attr;
+    public void setDetailpic(String detailpic) {
+        this.detailpic = detailpic;
+    }
+
+    public String getFleshpart() {
+        return fleshpart;
+    }
+
+    public void setFleshpart(String fleshpart) {
+        this.fleshpart = fleshpart;
+    }
+
+    public String getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(String inventory) {
+        this.inventory = inventory;
+    }
+
+    public int getSalecount() {
+        return salecount;
+    }
+
+    public void setSalecount(int salecount) {
+        this.salecount = salecount;
     }
 
     public String getTag() {

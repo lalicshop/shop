@@ -19,4 +19,9 @@ public class ProductServiceIml implements ProductService {
     public List<ProductModel> getAllProducts() {
         return productDao.getAllProduct();
     }
+
+    @Override
+    public ProductModel getProductById(String id) {
+        return productDao.getProductById(id);
+    }
 }

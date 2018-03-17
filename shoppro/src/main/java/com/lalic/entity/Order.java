@@ -1,42 +1,49 @@
 package com.lalic.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.List;
 
-@Entity(name = "shop_order")
-@Table(name = "shop_order")
-public class OrderModel {
+public class Order {
 
-    @Id
-    @Column(name = "orderid")
     private String orderid;
 
-    @Column(name = "payorderid")
     private String payorderid;
 
-    @Column(name = "payby")
     private String payby;
 
-    @Column(name = "userid")
     private String userid;
 
-    @Column(name = "status")
     private String status;
 
-    @Column(name = "totalprice")
     private double totalprice;
 
-    @Column(name = "buy_rent")
     private String buy_rent;
 
-    @Column(name = "comment")
     private String comment;
 
-    @Column(name = "addressid")
     private String addressid;
 
+    private List<OrderDetailModel> detail;
+
+    public Order(OrderModel order, List<OrderDetailModel> orderDetailByOrderid) {
+        this.orderid = order.getOrderid();
+        this.payorderid = order.getPayorderid();
+        this.payby = order.getPayby();
+        this.userid = order.getUserid();
+        this.status = order.getStatus();
+        this.totalprice = order.getTotalprice();
+        this.buy_rent = order.getBuy_rent();
+        this.comment = order.getComment();
+        this.addressid = order.getAddressid();
+        this.detail = orderDetailByOrderid;
+    }
+
+    public List<OrderDetailModel> getDetail() {
+        return detail;
+    }
+
+    public void setDetail(List<OrderDetailModel> detail) {
+        this.detail = detail;
+    }
 
     public String getOrderid() {
         return orderid;
@@ -109,4 +116,5 @@ public class OrderModel {
     public void setAddressid(String addressid) {
         this.addressid = addressid;
     }
+
 }

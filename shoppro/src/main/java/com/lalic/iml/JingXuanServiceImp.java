@@ -1,7 +1,7 @@
 package com.lalic.iml;
 
-import com.lalic.dao.ProductDao;
-import com.lalic.entity.ProductModel;
+import com.lalic.dao.JingXuanDao;
+import com.lalic.entity.JingXuan;
 import com.lalic.service.JingXuanService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import java.util.List;
 public class JingXuanServiceImp implements JingXuanService {
 
     @Autowired
-    ProductDao productDao;
+    JingXuanDao jingXuanDao;
 
     @Override
-    public List<ProductModel> getJingXuan() {
-        return productDao.getJingXuan();
+    public List<JingXuan> getJingXuan() {
+        return jingXuanDao.getJingXuan();
     }
 
 }

@@ -13,8 +13,8 @@ public class LunBoModel {
     @Column(name = "productid")
     private String productid;
 
-    @Column(name = "imgurl")
-    private String imgurl;
+    @Column(name = "lunboimgurl")
+    private String lunboimgurl;
 
     public String getProductid() {
         return productid;
@@ -24,11 +24,11 @@ public class LunBoModel {
         this.productid = productid;
     }
 
-    public String getImgurl() {
-        return imgurl;
+    public String getLunboimgurl() {
+        return lunboimgurl;
     }
 
-    public void setImgurl(String imgurl) {
-        this.imgurl = imgurl;
+    public void setLunboimgurl(String lunboimgurl) {
+        this.lunboimgurl = lunboimgurl;
     }
 }
