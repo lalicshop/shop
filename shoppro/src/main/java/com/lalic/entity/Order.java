@@ -22,6 +22,8 @@ public class Order {
 
     private String addressid;
 
+    private String deliverid;
+
     private List<OrderDetailModel> detail;
 
     public Order(OrderModel order, List<OrderDetailModel> orderDetailByOrderid) {
@@ -55,6 +57,14 @@ public class Order {
 
     public String getPayorderid() {
         return payorderid;
+    }
+
+    public String getDeliverid() {
+        return deliverid;
+    }
+
+    public void setDeliverid(String deliverid) {
+        this.deliverid = deliverid;
     }
 
     public void setPayorderid(String payorderid) {

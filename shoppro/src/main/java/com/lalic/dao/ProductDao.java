@@ -21,4 +21,11 @@ public interface ProductDao
     ProductModel getProductById(@Param(value = "id") String id);
 
 
+    @Query(value = "SELECT * FROM shop_product WHERE fleshpart=:fleshpartid", nativeQuery = true)
+    List<ProductModel> getProductByFleshPartID(@Param(value = "fleshpartid") String fleshpartid);
+
+    @Query(value = "SELECT DISTINCT fleshpart FROM shop_product", nativeQuery = true)
+    List<String> getFleshPartID();
+
+
 }

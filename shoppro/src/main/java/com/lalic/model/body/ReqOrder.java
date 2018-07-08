@@ -1,10 +1,11 @@
-package com.lalic.model.reqbody;
+package com.lalic.model.body;
 
 public class ReqOrder {
 
     private String userid;
 
     private String orderid;
+
 
     public String getUserid() {
         return userid;

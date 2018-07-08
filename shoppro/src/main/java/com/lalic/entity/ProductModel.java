@@ -23,10 +23,10 @@ public class ProductModel {
     private String shortdescription;
 
     @Column(name = "buyprice")
-    private double buyprice;
+    private String buyprice;
 
     @Column(name = "rentprice")
-    private double rentprice;
+    private String rentprice;
 
     @Column(name = "size")
     private String size;
@@ -56,7 +56,7 @@ public class ProductModel {
     private String inventory;
 
     @Column(name = "salecount")
-    private int salecount;
+    private String salecount;
 
     @Column(name = "tag")
     private String tag;
@@ -101,19 +101,19 @@ public class ProductModel {
         this.shortdescription = shortdescription;
     }
 
-    public double getBuyprice() {
+    public String getBuyprice() {
         return buyprice;
     }
 
-    public void setBuyprice(double buyprice) {
+    public void setBuyprice(String buyprice) {
         this.buyprice = buyprice;
     }
 
-    public double getRentprice() {
+    public String getRentprice() {
         return rentprice;
     }
 
-    public void setRentprice(double rentprice) {
+    public void setRentprice(String rentprice) {
         this.rentprice = rentprice;
     }
 
@@ -181,11 +181,11 @@ public class ProductModel {
         this.inventory = inventory;
     }
 
-    public int getSalecount() {
+    public String getSalecount() {
         return salecount;
     }
 
-    public void setSalecount(int salecount) {
+    public void setSalecount(String salecount) {
         this.salecount = salecount;
     }
 

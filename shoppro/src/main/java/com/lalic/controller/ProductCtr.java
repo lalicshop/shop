@@ -15,10 +15,24 @@ public class ProductCtr {
     @Autowired
     ProductService productService;
 
-    @RequestMapping(value = "/{productid}")
+    @RequestMapping(value = "/productid/{productid}")
     public BaseResponse getJingXuan(@PathVariable String productid) {
         BaseResponse response = new BaseResponse();
         response.setData(productService.getProductById(productid));
+        return response;
+    }
+
+    @RequestMapping(value = "/fleshpart/fleshpartid/{fleshpartid}")
+    public BaseResponse getByFleshPart(@PathVariable String fleshpartid) {
+        BaseResponse response = new BaseResponse();
+        response.setData(productService.getProductByFleshPartId(fleshpartid));
+        return response;
+    }
+
+    @RequestMapping(value = "/fleshpart/fleshpartid")
+    public BaseResponse getFleshPartID() {
+        BaseResponse response = new BaseResponse();
+        response.setData(productService.getFleshPartID());
         return response;
     }
 

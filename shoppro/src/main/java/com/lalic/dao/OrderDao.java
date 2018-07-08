@@ -19,5 +19,7 @@ public interface OrderDao
     @Query(value = "SELECT * FROM shop_order WHERE userid=:userid", nativeQuery = true)
     List<OrderModel> getOrderByUserid(@Param(value = "userid") String userid);
 
+    @Query(value = "SELECT 'status' FROM shop_order WHERE userid=:userid", nativeQuery = true)
+    String getStatusByOrderID(@Param(value = "userid") String userid);
 
 }

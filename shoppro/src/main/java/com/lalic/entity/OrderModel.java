@@ -37,6 +37,49 @@ public class OrderModel {
     @Column(name = "addressid")
     private String addressid;
 
+    @Column(name = "deliverid")
+    private String deliverid;
+
+    @Column(name = "date")
+    private String date;
+
+    @Column(name = "productid")
+    private String productid;
+
+    @Column(name = "quantity")
+    private String quantity;
+
+    public String getProductid() {
+        return productid;
+    }
+
+    public void setProductid(String productid) {
+        this.productid = productid;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDeliverid() {
+        return deliverid;
+    }
+
+    public void setDeliverid(String deliverid) {
+        this.deliverid = deliverid;
+    }
 
     public String getOrderid() {
         return orderid;
