@@ -12,14 +12,13 @@ import java.util.List;
 public interface OrderDao
         extends JpaRepository<OrderModel, String>, JpaSpecificationExecutor<OrderModel> {
 
-
     @Query(value = "SELECT * FROM shop_order WHERE orderid=:id", nativeQuery = true)
     OrderModel getOrderById(@Param(value = "id") String id);
 
     @Query(value = "SELECT * FROM shop_order WHERE userid=:userid", nativeQuery = true)
     List<OrderModel> getOrderByUserid(@Param(value = "userid") String userid);
 
-    @Query(value = "SELECT 'status' FROM shop_order WHERE userid=:userid", nativeQuery = true)
-    String getStatusByOrderID(@Param(value = "userid") String userid);
+    @Query(value = "SELECT * FROM shop_order WHERE userid=:userid AND `status`=:statusid", nativeQuery = true)
+    List<OrderModel> getOrderByStatus(@Param(value = "userid") String userid,@Param(value = "statusid") String statusid);
 
 }

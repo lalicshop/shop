@@ -12,6 +12,7 @@ import com.lalic.entity.ProductModel;
 import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.ReqMakeOrder;
+import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
 import com.lalic.util.BuyRentMapping;
 import com.lalic.util.Constant;
@@ -22,7 +23,9 @@ import com.lalic.util.TransferSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -115,21 +118,34 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-    public void makeOrder(List<ReqMakeOrder.OrderDetail> details, String buyOrRent) {
+    public void makeOrder(ReqMakeOrder makeOrder) {
         double totalPrize = 0;
+        List<ReqMakeOrder.OrderDetail> details = makeOrder.getDetail();
         for (ReqMakeOrder.OrderDetail detail : details) {
             String productid = detail.getProductid();
             String count = detail.getCount();
             ProductModel product = productDao.getProductById(productid);
-            double prize;
-            if ("".equalsIgnoreCase(buyOrRent)) {
+            double prize = 0.0;
+            if (Constant.BUY.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
                 prize = Double.valueOf(product.getBuyprice());
-            } else {
+            } else if (Constant.RENT.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
                 prize = Double.valueOf(product.getRentprice());
             }
-            prize = prize * Integer.valueOf(detail.getCount());
+            prize = prize * Integer.valueOf(count);
             totalPrize += prize;
         }
+        OrderModel order = new OrderModel();
+        order.setAddressid(makeOrder.getAddressid());
+        order.setBuy_rent(makeOrder.getBuyOrRent());
+        order.setProductid(makeOrder.getDetail().get(0).getProductid());
+        order.setQuantity(makeOrder.getDetail().get(0).getCount());
+        order.setTotalprice(totalPrize);
+        order.setStatus(Constant.ORDER_STATUS_WAITFORPAY);
+        order.setRetquantity("0");
+        order.setUserid(makeOrder.getUserid());
+        order.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        order.setComment(makeOrder.getComment());
+        orderDao.save(order);
     }
 
     @Override
@@ -156,7 +172,19 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-    public String getStatusByOrderId(String orderId) {
-        return orderDao.getStatusByOrderID(orderId);
+    public ReturnableResp getOrdersByStatus(String userid, String status) {
+        ReturnableResp ret = new ReturnableResp();
+        List<OrderModel> orders = orderDao.getOrderByStatus(userid, status);
+        for (OrderModel order : orders) {
+            ReturnableResp.Inner item = new ReturnableResp.Inner();
+            ProductModel product = productDao.getProductById(order.getProductid());
+            item.setId(order.getOrderid());
+            item.setImage_url(product.getMainpic());
+            int quantity = Integer.valueOf(order.getQuantity()) - Integer.valueOf(order.getRetquantity());
+            item.setNum(quantity + "");
+            item.setDescription(product.getDetailname());
+            ret.addItem(item);
+        }
+        return ret;
     }
 }

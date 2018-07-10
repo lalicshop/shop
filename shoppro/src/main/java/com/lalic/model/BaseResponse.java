@@ -12,16 +12,18 @@ public class BaseResponse {
         return data;
     }
 
-    public void setData(Object data) {
+    public BaseResponse setData(Object data) {
         this.data = data;
+        return this;
     }
 
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public BaseResponse setCode(int code) {
         this.code = code;
+        return this;
     }
 
     public String getMess() {

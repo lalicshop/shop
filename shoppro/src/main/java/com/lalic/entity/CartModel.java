@@ -20,7 +20,7 @@ public class CartModel {
     private String productid;
 
     @Column(name = "productcount")
-    private int productcount;
+    private String productcount;
 
     @Column(name = "buyrent")
     private String buyrent;
@@ -49,11 +49,11 @@ public class CartModel {
         this.productid = productid;
     }
 
-    public int getProductcount() {
+    public String getProductcount() {
         return productcount;
     }
 
-    public void setProductcount(int productcount) {
+    public void setProductcount(String productcount) {
         this.productcount = productcount;
     }
 

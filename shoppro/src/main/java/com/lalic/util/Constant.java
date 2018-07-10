@@ -24,4 +24,8 @@ public class Constant {
 
     public static final String BUY = "2";
 
+    public static final String ADDRESS_ISDEFAULT_YES = "0";
+
+    public static final String ADDRESS_ISDEFAULT_NO = "1";
+
 }

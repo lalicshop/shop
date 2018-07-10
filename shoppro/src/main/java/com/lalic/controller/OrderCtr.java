@@ -5,7 +5,9 @@ import com.lalic.model.BaseResponse;
 import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.ReqMakeOrder;
 import com.lalic.model.body.ReqOrder;
+import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
+import com.lalic.util.Constant;
 import com.lalic.util.UserChecker;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,13 @@ public class OrderCtr {
     @Autowired
     UserChecker userChecker;
 
-//    @RequestMapping(value = "/alldetail", method = RequestMethod.POST)
-//    public BaseResponse getOrderDetailList(@RequestBody ReqOrder reqOrder) {
-//        BaseResponse response = new BaseResponse();
-//        response.setData(orderService.getOrderDetailByUserid(reqOrder.getUserid()));
-//        return response;
-//    }
+    @RequestMapping(value = "/returnable", method = RequestMethod.POST)
+    public BaseResponse getOrderDetailList(@RequestBody ReqOrder reqOrder) {
+        BaseResponse response = new BaseResponse();
+        String userid = reqOrder.getUserid();
+        ReturnableResp orders = orderService.getOrdersByStatus(userid, Constant.ORDER_STATUS_DELIVERED);
+        return response.setData(orders);
+    }
 
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     public BaseResponse getOrderList(@RequestBody ReqOrder reqOrder) {
@@ -57,13 +60,12 @@ public class OrderCtr {
     @RequestMapping(value = "/makeorder", method = RequestMethod.POST)
     public BaseResponse makeOrder(@RequestBody ReqMakeOrder makeOrder) {
         BaseResponse response = new BaseResponse();
-
         if (!userChecker.isUserLegal(makeOrder.getUserid())) {
             response.setCode(400);
             response.setMess("非法用户");
             return response;
         }
-
+        orderService.makeOrder(makeOrder);
         return response;
     }
 

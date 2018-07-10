@@ -8,6 +8,28 @@ public class ReqMakeOrder {
 
     private String buyOrRent;
 
+    private String addressid;
+
+    private String comment;
+
+    private List<OrderDetail> detail;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getAddressid() {
+        return addressid;
+    }
+
+    public void setAddressid(String addressid) {
+        this.addressid = addressid;
+    }
+
     public String getBuyOrRent() {
         return buyOrRent;
     }
@@ -15,8 +37,6 @@ public class ReqMakeOrder {
     public void setBuyOrRent(String buyOrRent) {
         this.buyOrRent = buyOrRent;
     }
-
-    private List<OrderDetail> detail;
 
     public String getUserid() {
         return userid;

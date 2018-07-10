@@ -1,5 +1,7 @@
 package com.lalic.entity;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +13,7 @@ public class OrderModel {
 
     @Id
     @Column(name = "orderid")
-    private String orderid;
+    private String orderid = UUID.randomUUID().toString();
 
     @Column(name = "payorderid")
     private String payorderid;
@@ -49,6 +51,17 @@ public class OrderModel {
     @Column(name = "quantity")
     private String quantity;
 
+    @Column(name = "retquantity")
+    private String retquantity;
+
+    public String getRetquantity() {
+        return retquantity == null ? "0" : retquantity;
+    }
+
+    public void setRetquantity(String retquantity) {
+        this.retquantity = retquantity;
+    }
+
     public String getProductid() {
         return productid;
     }
@@ -58,7 +71,7 @@ public class OrderModel {
     }
 
     public String getQuantity() {
-        return quantity;
+        return quantity == null ? "0" : quantity;
     }
 
     public void setQuantity(String quantity) {
