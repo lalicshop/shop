@@ -30,7 +30,8 @@ public class BaseResponse {
         return mess;
     }
 
-    public void setMess(String mess) {
+    public BaseResponse setMess(String mess) {
         this.mess = mess;
+        return this;
     }
 }

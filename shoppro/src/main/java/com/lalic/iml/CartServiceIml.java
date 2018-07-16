@@ -25,28 +25,36 @@ public class CartServiceIml implements CartService {
 
     @Override
     public CartResp getCartByUserId(String userId) {
-        CartResp cp=new CartResp();
+        CartResp cp = new CartResp();
         List<CartModel> carts = cartDao.getCartByUserId(userId);
 
         for (CartModel cart : carts) {
-            CartResp.Inner item=new CartResp.Inner();
+            CartResp.Inner item = new CartResp.Inner();
             ProductModel product = productDao.getProductById(cart.getProductid());
             item.setId(cart.getCartid());
             item.setImage(product.getMainpic());
             item.setMode(cart.getBuyrent());
             item.setNum(cart.getProductcount());
             item.setTitle(product.getDetailname());
-            if(Constant.BUY.equals(cart.getBuyrent()))
-            {
-                double price=Integer.valueOf(cart.getProductcount())*Double.valueOf(product.getBuyprice());
-                item.setPrice(price+"");
-            }else if(Constant.RENT.equals(cart.getBuyrent()))
-            {
-                double price=Integer.valueOf(cart.getProductcount())*Double.valueOf(product.getRentprice());
-                item.setPrice(price+"");
+            if (Constant.BUY.equals(cart.getBuyrent())) {
+                double price = Integer.valueOf(cart.getProductcount()) * Double.valueOf(product.getBuyprice());
+                item.setPrice(price + "");
+            } else if (Constant.RENT.equals(cart.getBuyrent())) {
+                double price = Integer.valueOf(cart.getProductcount()) * Double.valueOf(product.getRentprice());
+                item.setPrice(price + "");
             }
             cp.add(item);
         }
         return cp;
+    }
+
+    @Override
+    public boolean putInCart(CartModel cartModel) {
+        try {
+            cartDao.save(cartModel);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -20,6 +20,8 @@ public class Constant {
 
     public static final String ORDER_STATUS_RETURNED = "6";
 
+    public static final String ORDER_STATUS_CANCELED = "9";
+
     public static final String RENT = "1";
 
     public static final String BUY = "2";

@@ -6,11 +6,21 @@ public class ReqMakeOrder {
 
     private String userid;
 
+    private String cartId;
+
     private String buyOrRent;
 
     private String addressid;
 
     private String comment;
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
+    }
 
     private List<OrderDetail> detail;
 

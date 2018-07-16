@@ -1,5 +1,6 @@
 package com.lalic.controller;
 
+import com.lalic.entity.CartModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.CartResp;
 import com.lalic.model.body.ReqOrder;
@@ -27,6 +28,14 @@ public class CartCtr {
         BaseResponse response = new BaseResponse();
         CartResp cart = cartService.getCartByUserId(reqOrder.getUserid());
         return response.setData(cart);
+    }
+
+    @RequestMapping(value = "/putin", method = RequestMethod.POST)
+    public BaseResponse putIntCart(@RequestBody CartModel reqCart) {
+        BaseResponse response = new BaseResponse();
+        if(cartService.putInCart(reqCart))
+            return response;
+        return response.setData("操作失败");
     }
 
 }

@@ -1,5 +1,6 @@
 package com.lalic.iml;
 
+import com.lalic.dao.CartDao;
 import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.OrderDetailDao;
@@ -9,8 +10,10 @@ import com.lalic.entity.Order;
 import com.lalic.entity.OrderDetailModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
+import com.lalic.model.BaseResponse;
 import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.DeliverResp;
+import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqMakeOrder;
 import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
@@ -22,6 +25,7 @@ import com.lalic.util.TransferSearch;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +46,9 @@ public class OrderServiceIml implements OrderService {
 
     @Autowired
     DeliverDao deliverDao;
+
+    @Autowired
+    CartDao cartDao;
 
     @Override
     public OrderModel getOrderById(String orderid) {
@@ -118,6 +125,7 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
+    @Transactional
     public void makeOrder(ReqMakeOrder makeOrder) {
         double totalPrize = 0;
         List<ReqMakeOrder.OrderDetail> details = makeOrder.getDetail();
@@ -146,6 +154,7 @@ public class OrderServiceIml implements OrderService {
         order.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         order.setComment(makeOrder.getComment());
         orderDao.save(order);
+        cartDao.deleteById(makeOrder.getCartId());
     }
 
     @Override
@@ -172,19 +181,35 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-    public ReturnableResp getOrdersByStatus(String userid, String status) {
+
+    public ReturnableResp getOrdersReturnableOrder(String userid) {
         ReturnableResp ret = new ReturnableResp();
-        List<OrderModel> orders = orderDao.getOrderByStatus(userid, status);
+        List<OrderModel> orders = orderDao.getOrderByStatus(userid, Constant.ORDER_STATUS_DELIVERED);
         for (OrderModel order : orders) {
+            if (!Constant.RENT.equals(order.getBuy_rent())) continue;
             ReturnableResp.Inner item = new ReturnableResp.Inner();
             ProductModel product = productDao.getProductById(order.getProductid());
             item.setId(order.getOrderid());
             item.setImage_url(product.getMainpic());
             int quantity = Integer.valueOf(order.getQuantity()) - Integer.valueOf(order.getRetquantity());
+            if (quantity == 0) continue;
             item.setNum(quantity + "");
             item.setDescription(product.getDetailname());
             ret.addItem(item);
         }
         return ret;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse confirmOrder(ReqConfirmOrder reqConfirmOrder) {
+        String orderid = reqConfirmOrder.getOrderid();
+        String userid = reqConfirmOrder.getUserid();
+        OrderModel order = orderDao.getOrderById(orderid);
+        if (!order.getUserid().equals(userid)) {
+            return new BaseResponse().setCode(403).setMess("非法操作");
+        }
+        orderDao.confirmOrder(orderid);
+        return new BaseResponse();
     }
 }

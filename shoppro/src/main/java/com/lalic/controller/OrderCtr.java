@@ -3,11 +3,11 @@ package com.lalic.controller;
 import com.lalic.entity.OrderModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.DeliverResp;
+import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqMakeOrder;
 import com.lalic.model.body.ReqOrder;
 import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
-import com.lalic.util.Constant;
 import com.lalic.util.UserChecker;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class OrderCtr {
     public BaseResponse getOrderDetailList(@RequestBody ReqOrder reqOrder) {
         BaseResponse response = new BaseResponse();
         String userid = reqOrder.getUserid();
-        ReturnableResp orders = orderService.getOrdersByStatus(userid, Constant.ORDER_STATUS_DELIVERED);
+        ReturnableResp orders = orderService.getOrdersReturnableOrder(userid);
         return response.setData(orders);
     }
 
@@ -67,6 +67,11 @@ public class OrderCtr {
         }
         orderService.makeOrder(makeOrder);
         return response;
+    }
+
+    @RequestMapping(value = "/confirmcorder", method = RequestMethod.POST)
+    public BaseResponse confirmOrder(@RequestBody ReqConfirmOrder confirmOrder) {
+        return orderService.confirmOrder(confirmOrder);
     }
 
 }

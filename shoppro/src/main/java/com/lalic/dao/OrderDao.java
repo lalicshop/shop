@@ -4,6 +4,7 @@ import com.lalic.entity.OrderModel;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,5 +21,9 @@ public interface OrderDao
 
     @Query(value = "SELECT * FROM shop_order WHERE userid=:userid AND `status`=:statusid", nativeQuery = true)
     List<OrderModel> getOrderByStatus(@Param(value = "userid") String userid,@Param(value = "statusid") String statusid);
+
+    @Query(value = "UPDATE shop_order SET `status`=4 WHERE orderid=:orderid", nativeQuery = true)
+    @Modifying
+    void confirmOrder(@Param(value = "orderid") String orderid);
 
 }

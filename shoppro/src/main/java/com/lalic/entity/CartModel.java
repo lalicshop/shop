@@ -1,5 +1,7 @@
 package com.lalic.entity;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +13,7 @@ public class CartModel {
 
     @Id
     @Column(name = "cartid")
-    private String cartid;
+    private String cartid= UUID.randomUUID().toString();
 
     @Column(name = "userid")
     private String userid;
