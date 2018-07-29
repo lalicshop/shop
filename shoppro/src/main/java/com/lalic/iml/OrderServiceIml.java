@@ -1,20 +1,21 @@
 package com.lalic.iml;
 
+import com.lalic.dao.AddressDao;
 import com.lalic.dao.CartDao;
 import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.OrderDetailDao;
 import com.lalic.dao.ProductDao;
 import com.lalic.entity.DeliverModel;
-import com.lalic.entity.Order;
-import com.lalic.entity.OrderDetailModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.ReqConfirmOrder;
+import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
+import com.lalic.model.body.ReqRemoveOrder;
 import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
 import com.lalic.util.BuyRentMapping;
@@ -28,7 +29,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,20 +50,12 @@ public class OrderServiceIml implements OrderService {
     @Autowired
     CartDao cartDao;
 
+    @Autowired
+    AddressDao addressDao;
+
     @Override
     public OrderModel getOrderById(String orderid) {
         return orderDao.getOrderById(orderid);
-    }
-
-    @Override
-    public List<Order> getOrderDetailByUserid(String userid) {
-        List<OrderModel> orderByUserid = orderDao.getOrderByUserid(userid);
-        List<Order> orders = new ArrayList<>();
-        orderByUserid.forEach(order -> {
-            List<OrderDetailModel> orderDetailByOrderid = orderDetailDao.getOrderDetailByOrderid(order.getOrderid());
-            orders.add(new Order(order, orderDetailByOrderid));
-        });
-        return orders;
     }
 
     @Override
@@ -94,7 +86,7 @@ public class OrderServiceIml implements OrderService {
         for (OrderModel order : allOrders) {
             ProductModel productById = productDao.getProductById(order.getProductid());
             AllOrderResp.OrderItem.InnerItem item = new AllOrderResp.OrderItem.InnerItem();
-            item.setDate(order.getDate());
+            item.setDate(order.getGeneratedate());
             item.setDescription(productById.getDetailname());
             item.setId(order.getOrderid());
             item.setImage_url(productById.getMainpic());
@@ -127,34 +119,29 @@ public class OrderServiceIml implements OrderService {
     @Override
     @Transactional
     public void makeOrder(ReqMakeOrder makeOrder) {
-        double totalPrize = 0;
-        List<ReqMakeOrder.OrderDetail> details = makeOrder.getDetail();
-        for (ReqMakeOrder.OrderDetail detail : details) {
-            String productid = detail.getProductid();
-            String count = detail.getCount();
-            ProductModel product = productDao.getProductById(productid);
-            double prize = 0.0;
-            if (Constant.BUY.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
-                prize = Double.valueOf(product.getBuyprice());
-            } else if (Constant.RENT.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
-                prize = Double.valueOf(product.getRentprice());
-            }
-            prize = prize * Integer.valueOf(count);
-            totalPrize += prize;
+        String productid = makeOrder.getProductid();
+        String count = makeOrder.getCount();
+        ProductModel product = productDao.getProductById(productid);
+        double price = 0.0;
+        if (Constant.BUY.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
+            price = Double.valueOf(product.getBuyprice());
+        } else if (Constant.RENT.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
+            price = Double.valueOf(product.getRentprice());
         }
+        price = price * Integer.valueOf(count);
         OrderModel order = new OrderModel();
-        order.setAddressid(makeOrder.getAddressid());
         order.setBuy_rent(makeOrder.getBuyOrRent());
-        order.setProductid(makeOrder.getDetail().get(0).getProductid());
-        order.setQuantity(makeOrder.getDetail().get(0).getCount());
-        order.setTotalprice(totalPrize);
+        order.setProductid(makeOrder.getProductid());
+        order.setQuantity(makeOrder.getCount());
+        order.setTotalprice(price);
         order.setStatus(Constant.ORDER_STATUS_WAITFORPAY);
         order.setRetquantity("0");
         order.setUserid(makeOrder.getUserid());
-        order.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        order.setComment(makeOrder.getComment());
+        order.setGeneratedate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         orderDao.save(order);
-        cartDao.deleteById(makeOrder.getCartId());
+        if(cartDao.existsById(makeOrder.getCartId())) {
+            cartDao.deleteById(makeOrder.getCartId());
+        }
     }
 
     @Override
@@ -166,14 +153,14 @@ public class OrderServiceIml implements OrderService {
         DeliverResp.Inner inner = new DeliverResp.Inner();
         inner.setCompany(DeliverComMapping.getDeliverCom(deliver.getCompany()));
         inner.setDescription(product.getDetailname());
-        inner.setDue_date(order.getDate());
+        inner.setDue_date(order.getGeneratedate());
         inner.setExpress_number(deliver.getDeliverno());
         inner.setId(order.getOrderid());
         inner.setImage(product.getMainpic());
         inner.setStatus(OrderStatusMapping.getStatus(order.getStatus()));
         inner.setStyle(BuyRentMapping.getBuyRent(order.getBuy_rent()));
 
-        if (Constant.ORDER_STATUS_DELIVERING.equalsIgnoreCase(order.getStatus()) || Constant.ORDER_STATUS_RETURNING.equalsIgnoreCase(order.getStatus())) {
+        if (Constant.ORDER_STATUS_DELIVERING.equalsIgnoreCase(order.getStatus())) {
             deliverResp.setLogistics_detail(TransferSearch.SearchById(order.getDeliverid()));
         }
         deliverResp.setOrders(inner);
@@ -212,4 +199,28 @@ public class OrderServiceIml implements OrderService {
         orderDao.confirmOrder(orderid);
         return new BaseResponse();
     }
+
+    @Override
+    @Transactional
+    public BaseResponse deliverOrder(ReqDeliverOrder order) {
+        orderDao.deliverOrder(order.getOrderid(), order.getDeliverid());
+        DeliverModel deliver = new DeliverModel();
+        deliver.setCompany(order.getDelivercom());
+        deliver.setDeliverno(order.getDeliverid());
+        deliver.setDetime(new Date().getTime());
+        deliver.setOrderid(order.getOrderid());
+        deliverDao.save(deliver);
+        return new BaseResponse();
+    }
+
+    @Override
+    public BaseResponse removeOrder(ReqRemoveOrder removeOrder) {
+        OrderModel order = orderDao.getOrderById(removeOrder.getOrderid());
+        if (order.getUserid().equals(removeOrder.getUserid())) {
+            orderDao.deleteById(removeOrder.getOrderid());
+            return new BaseResponse();
+        }
+        return new BaseResponse().setCode(403).setMess("非法操作");
+    }
+
 }

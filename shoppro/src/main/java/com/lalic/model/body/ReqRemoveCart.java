@@ -1,10 +1,11 @@
 package com.lalic.model.body;
 
-public class ReqOrder {
+public class ReqRemoveCart {
 
     private String userid;
 
-    private String orderid;
+    private String cartid;
+
 
     public String getUserid() {
         return userid;
@@ -14,11 +15,11 @@ public class ReqOrder {
         this.userid = userid;
     }
 
-    public String getOrderid() {
-        return orderid;
+    public String getCartid() {
+        return cartid;
     }
 
-    public void setOrderid(String orderid) {
-        this.orderid = orderid;
+    public void setCartid(String cartid) {
+        this.cartid = cartid;
     }
 }

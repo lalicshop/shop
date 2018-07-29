@@ -4,8 +4,10 @@ import com.lalic.entity.OrderModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.ReqConfirmOrder;
+import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
 import com.lalic.model.body.ReqOrder;
+import com.lalic.model.body.ReqRemoveOrder;
 import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
 import com.lalic.util.UserChecker;
@@ -42,6 +44,8 @@ public class OrderCtr {
         return response;
     }
 
+
+    //todo 修改
     @RequestMapping(value = "/deliver/{orderid}", method = RequestMethod.POST)
     public BaseResponse getOrderList(@RequestBody ReqOrder reqOrder, @PathVariable String orderid) {
         BaseResponse response = new BaseResponse();
@@ -57,6 +61,18 @@ public class OrderCtr {
         return response;
     }
 
+
+    /**
+     * {
+     "buyOrRent": "1",
+     "userid": "1",
+     "cartId":"ab2c44f8-cb34-4f31-9da9-f708169f7320",
+     "productid":"1",
+     "count":"5"
+     }
+     * @param makeOrder
+     * @return
+     */
     @RequestMapping(value = "/makeorder", method = RequestMethod.POST)
     public BaseResponse makeOrder(@RequestBody ReqMakeOrder makeOrder) {
         BaseResponse response = new BaseResponse();
@@ -72,6 +88,17 @@ public class OrderCtr {
     @RequestMapping(value = "/confirmcorder", method = RequestMethod.POST)
     public BaseResponse confirmOrder(@RequestBody ReqConfirmOrder confirmOrder) {
         return orderService.confirmOrder(confirmOrder);
+    }
+
+    @RequestMapping(value = "/removeorder", method = RequestMethod.POST)
+    public BaseResponse removeOrder(@RequestBody ReqRemoveOrder removeOrder) {
+        return orderService.removeOrder(removeOrder);
+    }
+
+    //内部接口
+    @RequestMapping(value = "/deliverorder", method = RequestMethod.POST)
+    public BaseResponse deliverOrder(@RequestBody ReqDeliverOrder order) {
+        return orderService.deliverOrder(order);
     }
 
 }

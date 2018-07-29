@@ -1,5 +1,7 @@
 package com.lalic.entity;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +13,7 @@ public class DeliverModel {
 
     @Id
     @Column(name = "deliverid")
-    private String deliverid;
+    private String deliverid= UUID.randomUUID().toString();
 
     @Column(name = "deliverno")
     private String deliverno;

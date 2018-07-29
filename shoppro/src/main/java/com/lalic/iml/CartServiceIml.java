@@ -5,6 +5,7 @@ import com.lalic.dao.ProductDao;
 import com.lalic.entity.CartModel;
 import com.lalic.entity.ProductModel;
 import com.lalic.model.body.CartResp;
+import com.lalic.model.body.ReqRemoveCart;
 import com.lalic.service.CartService;
 import com.lalic.util.Constant;
 
@@ -31,7 +32,8 @@ public class CartServiceIml implements CartService {
         for (CartModel cart : carts) {
             CartResp.Inner item = new CartResp.Inner();
             ProductModel product = productDao.getProductById(cart.getProductid());
-            item.setId(cart.getCartid());
+            item.setId(product.getProductid());
+            item.setCartid(cart.getCartid());
             item.setImage(product.getMainpic());
             item.setMode(cart.getBuyrent());
             item.setNum(cart.getProductcount());
@@ -56,5 +58,16 @@ public class CartServiceIml implements CartService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean removeCart(ReqRemoveCart removeCart) {
+        CartModel cart = cartDao.getCartById(removeCart.getCartid());
+        if(cart==null)return false;
+        if (cart.getUserid().equals(removeCart.getUserid())) {
+            cartDao.deleteById(removeCart.getCartid());
+            return true;
+        }
+        return false;
     }
 }

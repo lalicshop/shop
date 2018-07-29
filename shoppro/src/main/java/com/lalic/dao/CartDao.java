@@ -16,5 +16,8 @@ public interface CartDao
     @Query(value = "SELECT * FROM shop_cart WHERE userid=:userid", nativeQuery = true)
     List<CartModel> getCartByUserId(@Param(value = "userid") String userid);
 
+    @Query(value = "SELECT * FROM shop_cart WHERE cartid=:cartid", nativeQuery = true)
+    CartModel getCartById(@Param(value = "cartid") String cartid);
+
 
 }

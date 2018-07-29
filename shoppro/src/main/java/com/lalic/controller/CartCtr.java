@@ -4,6 +4,7 @@ import com.lalic.entity.CartModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.CartResp;
 import com.lalic.model.body.ReqOrder;
+import com.lalic.model.body.ReqRemoveCart;
 import com.lalic.service.CartService;
 import com.lalic.util.UserChecker;
 
@@ -31,11 +32,19 @@ public class CartCtr {
     }
 
     @RequestMapping(value = "/putin", method = RequestMethod.POST)
-    public BaseResponse putIntCart(@RequestBody CartModel reqCart) {
+    public BaseResponse putInCart(@RequestBody CartModel reqCart) {
         BaseResponse response = new BaseResponse();
         if(cartService.putInCart(reqCart))
             return response;
         return response.setData("操作失败");
+    }
+
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    public BaseResponse removeCart(@RequestBody ReqRemoveCart removeCart) {
+        BaseResponse response = new BaseResponse();
+        if(cartService.removeCart(removeCart))
+            return response;
+        return response.setData("操作无效").setCode(403);
     }
 
 }

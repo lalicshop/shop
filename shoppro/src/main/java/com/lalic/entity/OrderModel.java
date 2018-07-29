@@ -33,17 +33,11 @@ public class OrderModel {
     @Column(name = "buy_rent")
     private String buy_rent;
 
-    @Column(name = "comment")
-    private String comment;
-
-    @Column(name = "addressid")
-    private String addressid;
-
     @Column(name = "deliverid")
     private String deliverid;
 
-    @Column(name = "date")
-    private String date;
+    @Column(name = "generatedate")
+    private String generatedate;
 
     @Column(name = "productid")
     private String productid;
@@ -53,6 +47,48 @@ public class OrderModel {
 
     @Column(name = "retquantity")
     private String retquantity;
+
+    @Column(name = "paydate")
+    private String paydate;
+
+    @Column(name = "deliverdate")
+    private String deliverdate;
+
+    @Column(name = "reachdate")
+    private String reachdate;
+
+
+    public String getGeneratedate() {
+        return generatedate;
+    }
+
+    public void setGeneratedate(String generatedate) {
+        this.generatedate = generatedate;
+    }
+
+    public String getPaydate() {
+        return paydate;
+    }
+
+    public void setPaydate(String paydate) {
+        this.paydate = paydate;
+    }
+
+    public String getDeliverdate() {
+        return deliverdate;
+    }
+
+    public void setDeliverdate(String deliverdate) {
+        this.deliverdate = deliverdate;
+    }
+
+    public String getReachdate() {
+        return reachdate;
+    }
+
+    public void setReachdate(String reachdate) {
+        this.reachdate = reachdate;
+    }
 
     public String getRetquantity() {
         return retquantity == null ? "0" : retquantity;
@@ -78,13 +114,6 @@ public class OrderModel {
         this.quantity = quantity;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     public String getDeliverid() {
         return deliverid;
@@ -150,19 +179,4 @@ public class OrderModel {
         this.buy_rent = buy_rent;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getAddressid() {
-        return addressid;
-    }
-
-    public void setAddressid(String addressid) {
-        this.addressid = addressid;
-    }
 }

@@ -35,6 +35,15 @@ public class CartResp {
 
         private String mode;
 
+        private String cartid;
+
+        public String getCartid() {
+            return cartid;
+        }
+
+        public void setCartid(String cartid) {
+            this.cartid = cartid;
+        }
 
         public String getId() {
             return id;

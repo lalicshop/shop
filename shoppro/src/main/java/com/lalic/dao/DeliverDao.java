@@ -13,4 +13,5 @@ public interface DeliverDao
     @Query(value = "SELECT * FROM shop_deliver WHERE orderid=:orderid", nativeQuery = true)
     DeliverModel getDeliverByOrderId(@Param(value = "orderid") String orderid);
 
+
 }

@@ -30,17 +30,6 @@ public class AddressModel {
     @Column(name = "detail")
     private String detail;
 
-    @Column(name = "isdefault")
-    private String isdefault;
-
-    public String getIsdefault() {
-        return isdefault;
-    }
-
-    public void setIsdefault(String isdefault) {
-        this.isdefault = isdefault;
-    }
-
     public String getAddressid() {
         return addressid;
     }

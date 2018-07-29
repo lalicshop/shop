@@ -2,15 +2,11 @@ package com.lalic.iml;
 
 import com.lalic.dao.AddressDao;
 import com.lalic.entity.AddressModel;
-import com.lalic.model.BaseResponse;
 import com.lalic.service.AddressService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class AddressServiceIml implements AddressService {
@@ -19,13 +15,20 @@ public class AddressServiceIml implements AddressService {
     AddressDao addressDao;
 
     @Override
-    public List<AddressModel> getAddressByUserid(String userId) {
+    public AddressModel getAddressByUserid(String userId) {
         return addressDao.getAddressByUserId(userId);
     }
 
     @Override
-    public void addAddress(AddressModel address) {
-        addressDao.save(address);
+    @Transactional
+    public void upsertAddress(AddressModel address) {
+        AddressModel addressRes = addressDao.getAddressByUserId(address.getUserid());
+        if (addressRes == null) {
+            addressDao.save(address);
+        } else {
+            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail());
+        }
+
     }
 
     @Override
@@ -34,18 +37,4 @@ public class AddressServiceIml implements AddressService {
         addressDao.deleteByAddressid(addressid);
     }
 
-    @Override
-    @Transactional
-    public BaseResponse setDefault(String userid, String addressid) {
-        BaseResponse response=new BaseResponse();
-        AddressModel address = addressDao.getAddressId(addressid);
-        if (!userid.equals(address.getUserid())) {
-            response.setCode(403);
-            response.setMess("非法操作");
-            return response;
-        }
-        addressDao.setAllNotDefault(userid);
-        addressDao.setDefault(addressid);
-        return response;
-    }
 }

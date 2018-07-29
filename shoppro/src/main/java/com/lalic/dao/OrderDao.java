@@ -20,10 +20,18 @@ public interface OrderDao
     List<OrderModel> getOrderByUserid(@Param(value = "userid") String userid);
 
     @Query(value = "SELECT * FROM shop_order WHERE userid=:userid AND `status`=:statusid", nativeQuery = true)
-    List<OrderModel> getOrderByStatus(@Param(value = "userid") String userid,@Param(value = "statusid") String statusid);
+    List<OrderModel> getOrderByStatus(@Param(value = "userid") String userid, @Param(value = "statusid") String statusid);
 
     @Query(value = "UPDATE shop_order SET `status`=4 WHERE orderid=:orderid", nativeQuery = true)
     @Modifying
     void confirmOrder(@Param(value = "orderid") String orderid);
+
+    @Query(value = "UPDATE shop_order SET `status`=3 ,deliverid=:deliverid WHERE orderid=:orderid", nativeQuery = true)
+    @Modifying
+    void deliverOrder(@Param(value = "orderid") String orderid, @Param(value = "deliverid") String deliverid);
+
+    @Query(value = "UPDATE shop_order SET retquantity=:retquantity WHERE orderid=:orderid", nativeQuery = true)
+    @Modifying
+    void updateRetquantity(@Param(value = "orderid") String orderid, @Param(value = "retquantity") String retquantity);
 
 }
