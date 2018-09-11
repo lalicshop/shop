@@ -14,6 +14,9 @@ public interface AddressDao
     @Query(value = "SELECT * FROM shop_address WHERE userid=:userid", nativeQuery = true)
     AddressModel getAddressByUserId(@Param(value = "userid") String userid);
 
+    @Query(value = "SELECT phone FROM shop_address WHERE userid=:userid", nativeQuery = true)
+    String getPhoneByUserId(@Param(value = "userid") String userid);
+
     @Query(value = "SELECT * FROM shop_address WHERE addressid=:addressid", nativeQuery = true)
     AddressModel getAddressId(@Param(value = "addressid") String addressid);
 
@@ -21,12 +24,14 @@ public interface AddressDao
     @Modifying
     void deleteByAddressid(@Param(value = "addressid") String addressid);
 
-    @Query(value = "UPDATE shop_address SET province=:province,city=:city,district=:district,detail=:detail WHERE userid=:userid", nativeQuery = true)
+    @Query(value = "UPDATE shop_address SET province=:province,city=:city,district=:district,detail=:detail,username=:username,phone=:phone WHERE userid=:userid", nativeQuery = true)
     @Modifying
     void update(@Param(value = "userid") String userid,
                 @Param(value = "province") String province,
                 @Param(value = "city") String city,
                 @Param(value = "district") String district,
-                @Param(value = "detail") String detail);
+                @Param(value = "detail") String detail,
+                @Param(value = "username") String username,
+                @Param(value = "phone") String phone);
 
 }

@@ -41,9 +41,21 @@ public class ReturnServiceIml implements ReturnService {
     @Transactional
     public BaseResponse makereturn(ReqMakeRet makeRet) {
 
-        Integer toRetCount = Integer.valueOf(makeRet.getCount());
+        Integer toRetCount = null;
+        try {
+            toRetCount = Integer.valueOf(makeRet.getCount());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return new BaseResponse().setCode(400).setMess("输入错误");
+        }
 
-        OrderModel order = orderDao.getOrderById(makeRet.getOrderid());
+        OrderModel order = null;
+        try {
+            order = orderDao.getOrderById(makeRet.getOrderid());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new BaseResponse().setCode(400).setMess("输入错误");
+        }
         if (!Constant.RENT.equals(order.getBuy_rent())) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
@@ -61,6 +73,12 @@ public class ReturnServiceIml implements ReturnService {
         rm.setIsretmoney(Constant.IS_RETURN_MONEY_NO);
         rm.setStatus(Constant.ORDER_STATUS_RETURNING);
         rm.setDeliverno(makeRet.getDeliverno());
+        OrderModel orderById = orderDao.getOrderById(makeRet.getOrderid());
+        ProductModel productById = productDao.getProductById(orderById.getProductid());
+        rm.setDescription(productById.getDetailname());
+        rm.setMainpic(productById.getMainpic());
+        rm.setName(makeRet.getName());
+        rm.setPhone(makeRet.getPhone());
         returnDao.save(rm);
 
         orderDao.updateRetquantity(makeRet.getOrderid(), (toRetCount + Integer.valueOf(order.getRetquantity())) + "");
@@ -98,7 +116,7 @@ public class ReturnServiceIml implements ReturnService {
 
         ProductModel product = productDao.getProductById(order.getProductid());
 
-        RetItemResp rit=new RetItemResp(returnModel,product.getProductid(),product.getMainpic());
+        RetItemResp rit=new RetItemResp(returnModel,product.getProductid(),product.getMainpic(),product.getDetailname());
         Object o = TransferSearch.SearchById(returnModel.getDeliverno());
         rit.setDeliverDetail(o);
 

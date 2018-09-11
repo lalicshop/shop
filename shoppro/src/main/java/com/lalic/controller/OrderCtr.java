@@ -50,7 +50,7 @@ public class OrderCtr {
     public BaseResponse getOrderList(@RequestBody ReqOrder reqOrder, @PathVariable String orderid) {
         BaseResponse response = new BaseResponse();
         OrderModel order = orderService.getOrderById(orderid);
-        if (!order.getUserid().equals(reqOrder.getUserid())) {
+        if (order==null||!order.getUserid().equals(reqOrder.getUserid())) {
             response.setCode(403);
             response.setMess("非法查询");
             return response;
@@ -81,8 +81,7 @@ public class OrderCtr {
             response.setMess("非法用户");
             return response;
         }
-        orderService.makeOrder(makeOrder);
-        return response;
+        return orderService.makeOrder(makeOrder);
     }
 
     @RequestMapping(value = "/confirmcorder", method = RequestMethod.POST)

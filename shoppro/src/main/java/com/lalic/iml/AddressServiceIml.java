@@ -26,7 +26,7 @@ public class AddressServiceIml implements AddressService {
         if (addressRes == null) {
             addressDao.save(address);
         } else {
-            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail());
+            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail(),address.getUsername(),address.getPhone());
         }
 
     }

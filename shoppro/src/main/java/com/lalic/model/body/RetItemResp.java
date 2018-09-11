@@ -12,11 +12,12 @@ public class RetItemResp {
     private String reachdate;
     private String isretmoney;
     private String money;
-    private String status;
+    private int status;
     private String deliverno;
     private Object deliverDetail;
+    private String title;
 
-    public RetItemResp(ReturnModel returnModel,String productid,String imgurl) {
+    public RetItemResp(ReturnModel returnModel,String productid,String imgurl,String productTitle) {
         this.productid=productid;
         this.imgurl=imgurl;
         returnid=returnModel.getReturnid();
@@ -26,8 +27,17 @@ public class RetItemResp {
         reachdate=returnModel.getReachdate();
         isretmoney=returnModel.getIsretmoney();
         money=returnModel.getMoney();
-        status=returnModel.getStatus();
+        status=Integer.valueOf(returnModel.getStatus());
         deliverno=returnModel.getDeliverno();
+        title=productTitle;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getImgurl() {
@@ -102,11 +112,11 @@ public class RetItemResp {
         this.money = money;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

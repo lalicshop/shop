@@ -33,6 +33,14 @@ public class ReturnCtr {
         return response.setData(orders);
     }
 
+    @RequestMapping(value = "/returnable/item", method = RequestMethod.POST)
+    public BaseResponse getReturnableItem(@RequestBody ReqOrder reqOrder) {
+        BaseResponse response = new BaseResponse();
+        String userid = reqOrder.getUserid();
+        ReturnableResp.Inner oneReturn = orderService.getOneReturn(userid, reqOrder.getOrderid());
+        return response.setData(oneReturn);
+    }
+
 
     @RequestMapping(value = "/makereturn", method = RequestMethod.POST)
     public BaseResponse makeReturn(@RequestBody ReqMakeRet makeRet) {

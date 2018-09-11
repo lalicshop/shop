@@ -6,12 +6,14 @@ import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.OrderDetailDao;
 import com.lalic.dao.ProductDao;
+import com.lalic.entity.CartModel;
 import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.DeliverResp;
+import com.lalic.model.body.MakeOrderResp;
 import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class OrderServiceIml implements OrderService {
@@ -118,7 +121,13 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     @Transactional
-    public void makeOrder(ReqMakeOrder makeOrder) {
+    public BaseResponse makeOrder(ReqMakeOrder makeOrder) {
+        Optional<CartModel> byId = cartDao.findById(makeOrder.getCartId());
+        if(cartDao.existsById(makeOrder.getCartId())) {
+            cartDao.deleteById(makeOrder.getCartId());
+        }else {
+            return new BaseResponse().setMess("非法操作").setCode(403);
+        }
         String productid = makeOrder.getProductid();
         String count = makeOrder.getCount();
         ProductModel product = productDao.getProductById(productid);
@@ -137,11 +146,21 @@ public class OrderServiceIml implements OrderService {
         order.setStatus(Constant.ORDER_STATUS_WAITFORPAY);
         order.setRetquantity("0");
         order.setUserid(makeOrder.getUserid());
-        order.setGeneratedate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        order.setGeneratedate(createTime);
         orderDao.save(order);
-        if(cartDao.existsById(makeOrder.getCartId())) {
-            cartDao.deleteById(makeOrder.getCartId());
-        }
+
+        MakeOrderResp ret =new MakeOrderResp();
+        ret.setCreateTime(createTime);
+        // TODO: 2018/9/8
+        double deliverPrice = getDeliverPrice();
+        ret.setDeliverPrice(deliverPrice+"");
+        ret.setOrderId(order.getOrderid());
+        // TODO: 2018/9/8
+        ret.setPayOrderId("WXPAY123");
+        ret.setTotalPrice(price+deliverPrice+"");
+        ret.setTotalProductPrice(price+"");
+        return new BaseResponse().setData(ret);
     }
 
     @Override
@@ -151,14 +170,19 @@ public class OrderServiceIml implements OrderService {
         ProductModel product = productDao.getProductById(order.getProductid());
         DeliverModel deliver = deliverDao.getDeliverByOrderId(orderId);
         DeliverResp.Inner inner = new DeliverResp.Inner();
-        inner.setCompany(DeliverComMapping.getDeliverCom(deliver.getCompany()));
+        if(deliver!=null){
+            inner.setExpress_number(deliver.getDeliverno());
+            inner.setCompany(DeliverComMapping.getDeliverCom(deliver.getCompany()));
+        }
         inner.setDescription(product.getDetailname());
         inner.setDue_date(order.getGeneratedate());
-        inner.setExpress_number(deliver.getDeliverno());
         inner.setId(order.getOrderid());
         inner.setImage(product.getMainpic());
         inner.setStatus(OrderStatusMapping.getStatus(order.getStatus()));
         inner.setStyle(BuyRentMapping.getBuyRent(order.getBuy_rent()));
+        inner.setOrder_number(orderId);
+        inner.setTitle(product.getShortname());
+        inner.setPhone(addressDao.getPhoneByUserId(order.getUserid()));
 
         if (Constant.ORDER_STATUS_DELIVERING.equalsIgnoreCase(order.getStatus())) {
             deliverResp.setLogistics_detail(TransferSearch.SearchById(order.getDeliverid()));
@@ -180,11 +204,24 @@ public class OrderServiceIml implements OrderService {
             item.setImage_url(product.getMainpic());
             int quantity = Integer.valueOf(order.getQuantity()) - Integer.valueOf(order.getRetquantity());
             if (quantity == 0) continue;
-            item.setNum(quantity + "");
+            item.setNum(quantity);
             item.setDescription(product.getDetailname());
             ret.addItem(item);
         }
         return ret;
+    }
+
+    @Override
+    public ReturnableResp.Inner getOneReturn(String userid, String orderid) {
+        OrderModel order = orderDao.getOrderById(orderid);
+        ProductModel product = productDao.getProductById(order.getProductid());
+        ReturnableResp.Inner one = new ReturnableResp.Inner();
+        one.setDescription(product.getDetailname());
+        one.setImage_url(product.getMainpic());
+        one.setId(orderid);
+        int quantity = Integer.valueOf(order.getQuantity()) - Integer.valueOf(order.getRetquantity());
+        one.setNum(quantity);
+        return one;
     }
 
     @Override
@@ -223,4 +260,9 @@ public class OrderServiceIml implements OrderService {
         return new BaseResponse().setCode(403).setMess("非法操作");
     }
 
+
+
+    private double getDeliverPrice() {
+        return 20.0;
+    }
 }

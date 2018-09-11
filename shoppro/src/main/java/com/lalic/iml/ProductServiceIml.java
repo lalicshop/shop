@@ -41,6 +41,8 @@ public class ProductServiceIml implements ProductService {
 
         attributes.setBuy_price(product.getBuyprice());
         attributes.setRent_price(product.getRentprice());
+        attributes.setGoods_dsp(product.getDetailname());
+        attributes.setGoods_cont(product.getShortdescription());
 
         pdr.setSubImgUrls(Arrays.asList(product.getSubpic().split(";")));
         pdr.setDetailImgUrls(Arrays.asList(product.getDetailpic().split(";")));

@@ -125,6 +125,15 @@ public class ProductDetailResp {
         private String goods_cont;
         private String rent_price;
         private String buy_price;
+        private int num=1;
+
+        public int getNum() {
+            return num;
+        }
+
+        public void setNum(int num) {
+            this.num = num;
+        }
 
         public String getGoods_dsp() {
             return goods_dsp;

@@ -17,7 +17,7 @@ public interface OrderService {
 
     AllOrderResp getOrderByUserid(String userid);
 
-    void makeOrder(ReqMakeOrder makeOrder);
+    BaseResponse makeOrder(ReqMakeOrder makeOrder);
 
     DeliverResp getDeliverInfoByOrderId(String orderId);
 
@@ -28,4 +28,6 @@ public interface OrderService {
     BaseResponse deliverOrder(ReqDeliverOrder orderid);
 
     BaseResponse removeOrder(ReqRemoveOrder removeOrder);
+
+    ReturnableResp.Inner getOneReturn(String userid, String orderid);
 }

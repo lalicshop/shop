@@ -13,7 +13,7 @@ public class ReturnModel {
 
     @Id
     @Column(name = "returnid")
-    private String returnid= UUID.randomUUID().toString();
+    private String returnid = UUID.randomUUID().toString();
 
     @Column(name = "userid")
     private String userid;
@@ -41,6 +41,50 @@ public class ReturnModel {
 
     @Column(name = "deliverno")
     private String deliverno;
+
+    @Column(name = "mainpic")
+    private String mainpic;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "phone")
+    private String phone;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getMainpic() {
+        return mainpic;
+    }
+
+    public void setMainpic(String mainpic) {
+        this.mainpic = mainpic;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getDeliverno() {
         return deliverno;

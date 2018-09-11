@@ -1,7 +1,5 @@
 package com.lalic.entity;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,9 +10,6 @@ import javax.persistence.Table;
 public class AddressModel {
 
     @Id
-    @Column(name = "addressid")
-    private String addressid= UUID.randomUUID().toString();
-
     @Column(name = "userid")
     private String userid;
 
@@ -30,12 +25,26 @@ public class AddressModel {
     @Column(name = "detail")
     private String detail;
 
-    public String getAddressid() {
-        return addressid;
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "phone")
+    private String phone;
+
+    public String getUsername() {
+        return username;
     }
 
-    public void setAddressid(String addressid) {
-        this.addressid = addressid;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getUserid() {

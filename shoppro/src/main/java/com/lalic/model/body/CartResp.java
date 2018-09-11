@@ -33,7 +33,7 @@ public class CartResp {
 
         private String price;
 
-        private String mode;
+        private int mode;
 
         private String cartid;
 
@@ -85,11 +85,11 @@ public class CartResp {
             this.price = price;
         }
 
-        public String getMode() {
+        public int getMode() {
             return mode;
         }
 
-        public void setMode(String mode) {
+        public void setMode(int mode) {
             this.mode = mode;
         }
     }

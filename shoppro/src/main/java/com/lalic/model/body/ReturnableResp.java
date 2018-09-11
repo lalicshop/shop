@@ -27,9 +27,11 @@ public class ReturnableResp {
 
         private String image_url;
 
-        private String num;
+        private int num;
 
         private String description;
+
+
 
         public String getId() {
             return id;
@@ -47,11 +49,11 @@ public class ReturnableResp {
             this.image_url = image_url;
         }
 
-        public String getNum() {
+        public int getNum() {
             return num;
         }
 
-        public void setNum(String num) {
+        public void setNum(int num) {
             this.num = num;
         }
 

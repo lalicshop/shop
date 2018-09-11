@@ -35,7 +35,7 @@ public class CartServiceIml implements CartService {
             item.setId(product.getProductid());
             item.setCartid(cart.getCartid());
             item.setImage(product.getMainpic());
-            item.setMode(cart.getBuyrent());
+            item.setMode(Integer.valueOf(cart.getBuyrent()));
             item.setNum(cart.getProductcount());
             item.setTitle(product.getDetailname());
             if (Constant.BUY.equals(cart.getBuyrent())) {
