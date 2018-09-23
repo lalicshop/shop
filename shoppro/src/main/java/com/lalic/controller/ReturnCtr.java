@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping(value = "/return")
 public class ReturnCtr {
@@ -43,7 +45,7 @@ public class ReturnCtr {
 
 
     @RequestMapping(value = "/makereturn", method = RequestMethod.POST)
-    public BaseResponse makeReturn(@RequestBody ReqMakeRet makeRet) {
+    public BaseResponse makeReturn(@RequestBody ReqMakeRet makeRet, HttpServletResponse response) {
         return returnService.makereturn(makeRet);
     }
 

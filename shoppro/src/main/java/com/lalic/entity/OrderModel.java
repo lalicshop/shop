@@ -57,6 +57,27 @@ public class OrderModel {
     @Column(name = "reachdate")
     private String reachdate;
 
+    @Column(name = "cm")
+    private String cm;
+
+    @Column(name = "kg")
+    private String kg;
+
+    public String getCm() {
+        return cm;
+    }
+
+    public void setCm(String cm) {
+        this.cm = cm;
+    }
+
+    public String getKg() {
+        return kg;
+    }
+
+    public void setKg(String kg) {
+        this.kg = kg;
+    }
 
     public String getGeneratedate() {
         return generatedate;

@@ -6,7 +6,6 @@ import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.OrderDetailDao;
 import com.lalic.dao.ProductDao;
-import com.lalic.entity.CartModel;
 import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
@@ -23,8 +22,10 @@ import com.lalic.service.OrderService;
 import com.lalic.util.BuyRentMapping;
 import com.lalic.util.Constant;
 import com.lalic.util.DeliverComMapping;
+import com.lalic.util.DeliverPriceMapping;
 import com.lalic.util.OrderStatusMapping;
 import com.lalic.util.TransferSearch;
+import com.lalic.wx.WXPay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class OrderServiceIml implements OrderService {
@@ -122,12 +122,15 @@ public class OrderServiceIml implements OrderService {
     @Override
     @Transactional
     public BaseResponse makeOrder(ReqMakeOrder makeOrder) {
-        Optional<CartModel> byId = cartDao.findById(makeOrder.getCartId());
-        if(cartDao.existsById(makeOrder.getCartId())) {
-            cartDao.deleteById(makeOrder.getCartId());
-        }else {
-            return new BaseResponse().setMess("非法操作").setCode(403);
+        if (!"-1".equals(makeOrder.getCartId())) {
+            //-1代表是从未支付订单列表跳过来支付的，不是从购物车过来的
+            if (cartDao.existsById(makeOrder.getCartId())) {
+                cartDao.deleteById(makeOrder.getCartId());
+            } else {
+                return new BaseResponse().setMess("非法操作").setCode(403);
+            }
         }
+
         String productid = makeOrder.getProductid();
         String count = makeOrder.getCount();
         ProductModel product = productDao.getProductById(productid);
@@ -142,6 +145,8 @@ public class OrderServiceIml implements OrderService {
         order.setBuy_rent(makeOrder.getBuyOrRent());
         order.setProductid(makeOrder.getProductid());
         order.setQuantity(makeOrder.getCount());
+        order.setCm(makeOrder.getCm());
+        order.setKg(makeOrder.getKg());
         order.setTotalprice(price);
         order.setStatus(Constant.ORDER_STATUS_WAITFORPAY);
         order.setRetquantity("0");
@@ -150,16 +155,18 @@ public class OrderServiceIml implements OrderService {
         order.setGeneratedate(createTime);
         orderDao.save(order);
 
-        MakeOrderResp ret =new MakeOrderResp();
+        MakeOrderResp ret = new MakeOrderResp();
         ret.setCreateTime(createTime);
         // TODO: 2018/9/8
-        double deliverPrice = getDeliverPrice();
-        ret.setDeliverPrice(deliverPrice+"");
+        double deliverPrice = DeliverPriceMapping.getPrice("10");
+        ret.setDeliverPrice(deliverPrice + "");
         ret.setOrderId(order.getOrderid());
         // TODO: 2018/9/8
-        ret.setPayOrderId("WXPAY123");
-        ret.setTotalPrice(price+deliverPrice+"");
-        ret.setTotalProductPrice(price+"");
+        String payId = WXPay.getPayId();
+        if (payId == null) throw new RuntimeException();
+        ret.setPayOrderId(payId);
+        ret.setTotalPrice(price + deliverPrice + "");
+        ret.setTotalProductPrice(price + "");
         return new BaseResponse().setData(ret);
     }
 
@@ -170,7 +177,7 @@ public class OrderServiceIml implements OrderService {
         ProductModel product = productDao.getProductById(order.getProductid());
         DeliverModel deliver = deliverDao.getDeliverByOrderId(orderId);
         DeliverResp.Inner inner = new DeliverResp.Inner();
-        if(deliver!=null){
+        if (deliver != null) {
             inner.setExpress_number(deliver.getDeliverno());
             inner.setCompany(DeliverComMapping.getDeliverCom(deliver.getCompany()));
         }
@@ -179,10 +186,14 @@ public class OrderServiceIml implements OrderService {
         inner.setId(order.getOrderid());
         inner.setImage(product.getMainpic());
         inner.setStatus(OrderStatusMapping.getStatus(order.getStatus()));
+        inner.setStatusnum(Integer.valueOf(order.getStatus()));
         inner.setStyle(BuyRentMapping.getBuyRent(order.getBuy_rent()));
         inner.setOrder_number(orderId);
+        inner.setProductid(product.getProductid());
+        inner.setBuyOrRent(Integer.valueOf(order.getBuy_rent()));
         inner.setTitle(product.getShortname());
         inner.setPhone(addressDao.getPhoneByUserId(order.getUserid()));
+        inner.setNum(order.getQuantity());
 
         if (Constant.ORDER_STATUS_DELIVERING.equalsIgnoreCase(order.getStatus())) {
             deliverResp.setLogistics_detail(TransferSearch.SearchById(order.getDeliverid()));
@@ -259,7 +270,6 @@ public class OrderServiceIml implements OrderService {
         }
         return new BaseResponse().setCode(403).setMess("非法操作");
     }
-
 
 
     private double getDeliverPrice() {

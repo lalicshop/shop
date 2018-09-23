@@ -25,6 +25,10 @@ public class DeliverResp {
     public static class Inner {
         private String id;
 
+        private String productid;
+
+        private int buyOrRent;
+
         private String style;
 
         private String title;
@@ -32,6 +36,8 @@ public class DeliverResp {
         private String image;
 
         private String status;
+
+        private int statusnum;
 
         private String num;
 
@@ -46,6 +52,30 @@ public class DeliverResp {
         private String phone;
 
         private String description;
+
+        public String getProductid() {
+            return productid;
+        }
+
+        public void setProductid(String productid) {
+            this.productid = productid;
+        }
+
+        public int getBuyOrRent() {
+            return buyOrRent;
+        }
+
+        public void setBuyOrRent(int buyOrRent) {
+            this.buyOrRent = buyOrRent;
+        }
+
+        public int getStatusnum() {
+            return statusnum;
+        }
+
+        public void setStatusnum(int statusnum) {
+            this.statusnum = statusnum;
+        }
 
         public String getId() {
             return id;

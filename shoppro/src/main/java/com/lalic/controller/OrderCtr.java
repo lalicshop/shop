@@ -94,6 +94,16 @@ public class OrderCtr {
         return orderService.removeOrder(removeOrder);
     }
 
+
+    @RequestMapping(value = "/confirmpay", method = RequestMethod.POST)
+    public String confirmPay(@RequestBody ReqConfirmOrder confirmOrder) {
+
+        System.out.println("");
+        return "";
+    }
+
+
+
     //内部接口
     @RequestMapping(value = "/deliverorder", method = RequestMethod.POST)
     public BaseResponse deliverOrder(@RequestBody ReqDeliverOrder order) {

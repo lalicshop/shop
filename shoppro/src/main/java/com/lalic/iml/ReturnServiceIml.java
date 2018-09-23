@@ -56,6 +56,10 @@ public class ReturnServiceIml implements ReturnService {
             e.printStackTrace();
             return new BaseResponse().setCode(400).setMess("输入错误");
         }
+        if(order==null)
+        {
+            return new BaseResponse().setCode(403).setMess("非法操作");
+        }
         if (!Constant.RENT.equals(order.getBuy_rent())) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
