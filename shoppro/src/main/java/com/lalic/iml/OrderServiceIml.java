@@ -121,7 +121,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     @Transactional
-    public BaseResponse makeOrder(ReqMakeOrder makeOrder) {
+    public BaseResponse makeOrder(ReqMakeOrder makeOrder) throws Exception {
         if (!"-1".equals(makeOrder.getCartId())) {
             //-1代表是从未支付订单列表跳过来支付的，不是从购物车过来的
             if (cartDao.existsById(makeOrder.getCartId())) {
@@ -134,11 +134,11 @@ public class OrderServiceIml implements OrderService {
         String productid = makeOrder.getProductid();
         String count = makeOrder.getCount();
         ProductModel product = productDao.getProductById(productid);
-        double price = 0.0;
+        int price = 0;
         if (Constant.BUY.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
-            price = Double.valueOf(product.getBuyprice());
+            price = Double.valueOf(product.getBuyprice()).intValue();
         } else if (Constant.RENT.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
-            price = Double.valueOf(product.getRentprice());
+            price = Double.valueOf(product.getRentprice()).intValue();
         }
         price = price * Integer.valueOf(count);
         OrderModel order = new OrderModel();
@@ -158,15 +158,19 @@ public class OrderServiceIml implements OrderService {
         MakeOrderResp ret = new MakeOrderResp();
         ret.setCreateTime(createTime);
         // TODO: 2018/9/8
-        double deliverPrice = DeliverPriceMapping.getPrice("10");
+        int deliverPrice = DeliverPriceMapping.getPrice("10");
         ret.setDeliverPrice(deliverPrice + "");
         ret.setOrderId(order.getOrderid());
         // TODO: 2018/9/8
-        String payId = WXPay.getPayId();
-        if (payId == null) throw new RuntimeException();
-        ret.setPayOrderId(payId);
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
+        String prepayId = WXPay.makeWXPay(ret, order, product);
+//        String prepayId = "";
+
+        if ("".equals(prepayId)) {
+            throw new Exception("获取支付信息错误");
+        }
+        ret.setPayOrderId(prepayId);
         return new BaseResponse().setData(ret);
     }
 

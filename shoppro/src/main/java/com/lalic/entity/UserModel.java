@@ -5,8 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity(name = "shop_jingxuan")
-@Table(name = "shop_jingxuan")
+@Entity(name = "shop_user")
+@Table(name = "shop_user")
 public class UserModel {
 
     @Id

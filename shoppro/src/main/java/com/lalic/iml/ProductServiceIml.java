@@ -38,6 +38,8 @@ public class ProductServiceIml implements ProductService {
         goods.setDetail(product.getMess());
         goods.setImage(product.getMainpic());
         goods.setTitle(product.getShortname());
+        goods.setParameter(product.getAttr());
+        goods.setService(product.getAftersale());
 
         attributes.setBuy_price(product.getBuyprice());
         attributes.setRent_price(product.getRentprice());

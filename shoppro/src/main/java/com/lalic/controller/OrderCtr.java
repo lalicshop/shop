@@ -50,7 +50,7 @@ public class OrderCtr {
     public BaseResponse getOrderList(@RequestBody ReqOrder reqOrder, @PathVariable String orderid) {
         BaseResponse response = new BaseResponse();
         OrderModel order = orderService.getOrderById(orderid);
-        if (order==null||!order.getUserid().equals(reqOrder.getUserid())) {
+        if (order == null || !order.getUserid().equals(reqOrder.getUserid())) {
             response.setCode(403);
             response.setMess("非法查询");
             return response;
@@ -64,24 +64,32 @@ public class OrderCtr {
 
     /**
      * {
-     "buyOrRent": "1",
-     "userid": "1",
-     "cartId":"ab2c44f8-cb34-4f31-9da9-f708169f7320",
-     "productid":"1",
-     "count":"5"
-     }
+     * "buyOrRent": "1",
+     * "userid": "1",
+     * "cartId":"ab2c44f8-cb34-4f31-9da9-f708169f7320",
+     * "productid":"1",
+     * "count":"5"
+     * }
+     *
      * @param makeOrder
      * @return
      */
     @RequestMapping(value = "/makeorder", method = RequestMethod.POST)
-    public BaseResponse makeOrder(@RequestBody ReqMakeOrder makeOrder) {
+    public BaseResponse makeOrder(@RequestBody ReqMakeOrder makeOrder) throws Exception {
         BaseResponse response = new BaseResponse();
         if (!userChecker.isUserLegal(makeOrder.getUserid())) {
             response.setCode(400);
             response.setMess("非法用户");
             return response;
         }
-        return orderService.makeOrder(makeOrder);
+//        try {
+            return orderService.makeOrder(makeOrder);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.setCode(500);
+//            response.setMess("获取支付信息出错");
+//        }
+//        return response;
     }
 
     @RequestMapping(value = "/confirmcorder", method = RequestMethod.POST)
@@ -101,7 +109,6 @@ public class OrderCtr {
         System.out.println("");
         return "";
     }
-
 
 
     //内部接口

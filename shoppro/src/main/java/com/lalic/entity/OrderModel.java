@@ -13,7 +13,7 @@ public class OrderModel {
 
     @Id
     @Column(name = "orderid")
-    private String orderid = UUID.randomUUID().toString();
+    private String orderid = UUID.randomUUID().toString().replace("-","");
 
     @Column(name = "payorderid")
     private String payorderid;
@@ -28,7 +28,7 @@ public class OrderModel {
     private String status;
 
     @Column(name = "totalprice")
-    private double totalprice;
+    private int totalprice;
 
     @Column(name = "buy_rent")
     private String buy_rent;
@@ -184,11 +184,11 @@ public class OrderModel {
         this.status = status;
     }
 
-    public double getTotalprice() {
+    public int getTotalprice() {
         return totalprice;
     }
 
-    public void setTotalprice(double totalprice) {
+    public void setTotalprice(int totalprice) {
         this.totalprice = totalprice;
     }
 

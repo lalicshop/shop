@@ -17,7 +17,7 @@ public interface OrderService {
 
     AllOrderResp getOrderByUserid(String userid);
 
-    BaseResponse makeOrder(ReqMakeOrder makeOrder);
+    BaseResponse makeOrder(ReqMakeOrder makeOrder) throws Exception;
 
     DeliverResp getDeliverInfoByOrderId(String orderId);
 
