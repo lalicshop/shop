@@ -6,6 +6,7 @@ import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.OrderDetailDao;
 import com.lalic.dao.ProductDao;
+import com.lalic.entity.CartModel;
 import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
@@ -25,7 +26,9 @@ import com.lalic.util.DeliverComMapping;
 import com.lalic.util.DeliverPriceMapping;
 import com.lalic.util.OrderStatusMapping;
 import com.lalic.util.TransferSearch;
+import com.lalic.wx.WXConstant;
 import com.lalic.wx.WXPay;
+import com.lalic.wx.WXPayResResp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -121,7 +124,9 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     @Transactional
-    public BaseResponse makeOrder(ReqMakeOrder makeOrder) throws Exception {
+    public BaseResponse makeOrder(ReqMakeOrder makeOrder){
+        CartModel cartById = cartDao.getCartById(makeOrder.getCartId());
+
         if (!"-1".equals(makeOrder.getCartId())) {
             //-1代表是从未支付订单列表跳过来支付的，不是从购物车过来的
             if (cartDao.existsById(makeOrder.getCartId())) {
@@ -131,20 +136,20 @@ public class OrderServiceIml implements OrderService {
             }
         }
 
-        String productid = makeOrder.getProductid();
-        String count = makeOrder.getCount();
+        String productid = cartById.getProductid();
+        String count = cartById.getProductcount();
         ProductModel product = productDao.getProductById(productid);
         int price = 0;
-        if (Constant.BUY.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
+        if (Constant.BUY.equalsIgnoreCase(cartById.getBuyrent())) {
             price = Double.valueOf(product.getBuyprice()).intValue();
-        } else if (Constant.RENT.equalsIgnoreCase(makeOrder.getBuyOrRent())) {
+        } else if (Constant.RENT.equalsIgnoreCase(cartById.getBuyrent())) {
             price = Double.valueOf(product.getRentprice()).intValue();
         }
         price = price * Integer.valueOf(count);
         OrderModel order = new OrderModel();
-        order.setBuy_rent(makeOrder.getBuyOrRent());
-        order.setProductid(makeOrder.getProductid());
-        order.setQuantity(makeOrder.getCount());
+        order.setBuy_rent(cartById.getBuyrent());
+        order.setProductid(cartById.getProductid());
+        order.setQuantity(cartById.getProductcount());
         order.setCm(makeOrder.getCm());
         order.setKg(makeOrder.getKg());
         order.setTotalprice(price);
@@ -153,7 +158,7 @@ public class OrderServiceIml implements OrderService {
         order.setUserid(makeOrder.getUserid());
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         order.setGeneratedate(createTime);
-        orderDao.save(order);
+
 
         MakeOrderResp ret = new MakeOrderResp();
         ret.setCreateTime(createTime);
@@ -165,11 +170,12 @@ public class OrderServiceIml implements OrderService {
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
         String prepayId = WXPay.makeWXPay(ret, order, product);
-//        String prepayId = "";
-
+//        String prepayId = "abc";
         if ("".equals(prepayId)) {
-            throw new Exception("获取支付信息错误");
+            return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
+        order.setPayorderid(prepayId);
+        orderDao.save(order);
         ret.setPayOrderId(prepayId);
         return new BaseResponse().setData(ret);
     }
@@ -207,7 +213,6 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-
     public ReturnableResp getOrdersReturnableOrder(String userid) {
         ReturnableResp ret = new ReturnableResp();
         List<OrderModel> orders = orderDao.getOrderByStatus(userid, Constant.ORDER_STATUS_DELIVERED);
@@ -237,6 +242,23 @@ public class OrderServiceIml implements OrderService {
         int quantity = Integer.valueOf(order.getQuantity()) - Integer.valueOf(order.getRetquantity());
         one.setNum(quantity);
         return one;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse confirmPay(String orderid) {
+        BaseResponse response = new BaseResponse();
+
+        WXPayResResp wxPayResResp = WXPay.searchPayRes(orderid);
+        if (wxPayResResp == null) {
+            //http请求失败
+            return response.setCode(500).setMess("查询失败");
+        }
+        if (WXConstant.PAY_SUCCESS.equals(wxPayResResp.getTrade_state())) {
+            orderDao.confirmPay(orderid);
+            response.setData(WXConstant.PAY_SUCCESS);
+        }
+        return response;
     }
 
     @Override

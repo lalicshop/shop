@@ -34,4 +34,8 @@ public interface OrderDao
     @Modifying
     void updateRetquantity(@Param(value = "orderid") String orderid, @Param(value = "retquantity") String retquantity);
 
+    @Query(value = "UPDATE shop_order SET `status`=2 WHERE orderid=:orderid", nativeQuery = true)
+    @Modifying
+    void confirmPay(@Param(value = "orderid") String orderid);
+
 }

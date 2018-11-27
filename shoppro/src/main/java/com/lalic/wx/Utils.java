@@ -22,7 +22,7 @@ public class Utils {
         return UUID.randomUUID().toString().replace("-", "").substring(16);
     }
 
-    public static String sign(WXPayParams params) {
+    public static String signPay(WXPayParams params) {
 
         TreeMap paramMap = new TreeMap();
         paramMap.put("appid", params.getAppid());//公众账号ID
@@ -46,6 +46,19 @@ public class Utils {
         paramMap.put("product_id", params.getProduct_id());
         paramMap.put("limit_pay", params.getLimit_pay());
         paramMap.put("openid", params.getOpenid());
+
+        return createSign(paramMap);
+    }
+
+    public static String signPayRes(WXPayResParams params) {
+
+        TreeMap paramMap = new TreeMap();
+        paramMap.put("appid", params.getAppid());//公众账号ID
+        paramMap.put("mch_id", params.getMch_id());//商户号
+        paramMap.put("nonce_str", params.getNonce_str());//随机字符串
+        paramMap.put("sign_type", params.getSign_type());//签名类型
+        paramMap.put("out_trade_no", params.getOut_trade_no());//商户订单号
+        paramMap.put("sign", params.getSign());
 
         return createSign(paramMap);
     }
@@ -82,16 +95,16 @@ public class Utils {
         return md5code;
     }
 
-    public static String makeXML(WXPayParams params) {
+    public static String makeXML(Object obj, Class clazz) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(WXPayParams.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
 
             StringWriter writer = new StringWriter();
-            marshaller.marshal(params, writer);
+            marshaller.marshal(obj, writer);
             return writer.toString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,11 +112,11 @@ public class Utils {
         return "";
     }
 
-    public static WXPayResp parseXML(String xmlstr) {
+    public static <T> T parseXML(String xmlstr, Class<T> clazz) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(WXPayResp.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            WXPayResp resp = (WXPayResp) unmarshaller.unmarshal(new StringReader(xmlstr));
+            T resp = (T) unmarshaller.unmarshal(new StringReader(xmlstr));
             return resp;
 
         } catch (JAXBException e) {
@@ -128,7 +141,7 @@ public class Utils {
                 "   <result_code><![CDATA[SUCCESS]]></result_code>\n" +
                 "   <prepay_id><![CDATA[wx201411101639507cbf6ffd8b0779950874]]></prepay_id>\n" +
                 "   <trade_type><![CDATA[JSAPI]]></trade_type>\n" +
-                "</xml>");
+                "</xml>", WXPayResp.class);
         System.out.println("");
     }
 

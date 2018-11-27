@@ -30,4 +30,6 @@ public interface OrderService {
     BaseResponse removeOrder(ReqRemoveOrder removeOrder);
 
     ReturnableResp.Inner getOneReturn(String userid, String orderid);
+
+    BaseResponse confirmPay(String orderid);
 }

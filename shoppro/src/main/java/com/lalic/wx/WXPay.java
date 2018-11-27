@@ -21,9 +21,9 @@ public class WXPay {
         pay.setSpbill_create_ip(WXConstant.getLocalIP());
         pay.setNotify_url("http://www.baidu.com");
         pay.setOpenid("ouccJ4y88qLWUFv_PKdka80zJv6Q");
-        pay.setSign(Utils.sign(pay));
+        pay.setSign(Utils.signPay(pay));
 
-        String postBody = Utils.makeXML(pay);
+        String postBody = Utils.makeXML(pay, WXPayParams.class);
 
         if (Utils.isEmpty(postBody)) {
             return "";
@@ -31,7 +31,7 @@ public class WXPay {
 
         String wxresp = SimpleHttp.post(WXConstant.getMakeorderurl(), null, postBody).getBody();
         System.out.println(wxresp);
-        WXPayResp wxPayResp = Utils.parseXML(wxresp);
+        WXPayResp wxPayResp = Utils.parseXML(wxresp, WXPayResp.class);
         if (wxPayResp == null) {
             return "";
         }
@@ -42,19 +42,25 @@ public class WXPay {
         return "";
     }
 
-    public static void main(String[] args) {
-        WXPayResp wxPayResp = Utils.parseXML("<xml><return_code><![CDATA[SUCCESS]]></return_code>\n" +
-                "<return_msg><![CDATA[OK]]></return_msg>\n" +
-                "<appid><![CDATA[wx430252612d3607bc]]></appid>\n" +
-                "<mch_id><![CDATA[1519177151]]></mch_id>\n" +
-                "<nonce_str><![CDATA[T0hSIFY6XDPP4lrX]]></nonce_str>\n" +
-                "<sign><![CDATA[805CC4F11F0B30B052175856BEF02E97]]></sign>\n" +
-                "<result_code><![CDATA[SUCCESS]]></result_code>\n" +
-                "<prepay_id><![CDATA[wx26210000399437b31115ca7f1571110942]]></prepay_id>\n" +
-                "<trade_type><![CDATA[JSAPI]]></trade_type>\n" +
-                "</xml>");
+    public static WXPayResResp searchPayRes(String orderid) {
 
-        System.out.println("");
+        WXPayResParams params = new WXPayResParams();
+        params.setOut_trade_no(orderid);
+        params.setSign(Utils.signPayRes(params));
+
+        String postBody = Utils.makeXML(params, WXPayResParams.class);
+        System.out.println(postBody);
+        SimpleHttp.Response post = SimpleHttp.post(WXConstant.getQueryorderurl(), null, postBody);
+
+        if (post == null) {
+            return null;
+        }
+        return Utils.parseXML(post.getBody(), WXPayResResp.class);
+    }
+
+    public static void main(String[] args) {
+
+
     }
 
 

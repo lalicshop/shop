@@ -23,19 +23,19 @@ public class MainPageCtr {
     @Autowired
     JingXuanService jingXuanService;
 
-    @RequestMapping(value = "/lunbo")
-    public BaseResponse getLunBo() {
-        BaseResponse response = new BaseResponse();
-        response.setData(lunBoService.getLunBo());
-        return response;
-    }
-
-    @RequestMapping(value = "/jingxuan")
-    public BaseResponse getJingXuan() {
-        BaseResponse response = new BaseResponse();
-        response.setData(jingXuanService.getJingXuan());
-        return response;
-    }
+//    @RequestMapping(value = "/lunbo")
+//    public BaseResponse getLunBo() {
+//        BaseResponse response = new BaseResponse();
+//        response.setData(lunBoService.getLunBo());
+//        return response;
+//    }
+//
+//    @RequestMapping(value = "/jingxuan")
+//    public BaseResponse getJingXuan() {
+//        BaseResponse response = new BaseResponse();
+//        response.setData(jingXuanService.getJingXuan());
+//        return response;
+//    }
 
     @RequestMapping(value = "/main")
     public BaseResponse getMainPage() {

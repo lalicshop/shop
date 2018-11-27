@@ -82,14 +82,9 @@ public class OrderCtr {
             response.setMess("非法用户");
             return response;
         }
-//        try {
-            return orderService.makeOrder(makeOrder);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.setCode(500);
-//            response.setMess("获取支付信息出错");
-//        }
-//        return response;
+
+        return orderService.makeOrder(makeOrder);
+
     }
 
     @RequestMapping(value = "/confirmcorder", method = RequestMethod.POST)
@@ -103,11 +98,10 @@ public class OrderCtr {
     }
 
 
-    @RequestMapping(value = "/confirmpay", method = RequestMethod.POST)
-    public String confirmPay(@RequestBody ReqConfirmOrder confirmOrder) {
-
-        System.out.println("");
-        return "";
+    @RequestMapping(value = "/confirmpay/{orderid}", method = RequestMethod.GET)
+    public BaseResponse confirmPay(@PathVariable String orderid) {
+        BaseResponse response = orderService.confirmPay(orderid);
+        return response;
     }
 
 

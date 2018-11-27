@@ -6,6 +6,20 @@ import java.util.Properties;
 
 public class WXConstant {
 
+    public static final String PAY_SUCCESS = "SUCCESS";
+
+    public static final String PAY_REFUND = "REFUND";
+
+    public static final String PAY_NOTPAY = "NOTPAY";
+
+    public static final String PAY_CLOSED = "CLOSED";
+
+    public static final String PAY_REVOKED = "REVOKED";
+
+    public static final String PAY_USERPAYING = "USERPAYING";
+
+    public static final String PAY_PAYERROR = "PAYERROR";
+
 
     private static Properties mapping = new Properties();
 
@@ -40,6 +54,10 @@ public class WXConstant {
 
     public static String getLocalIP() {
         return mapping.getProperty("localIP");
+    }
+
+    public static String getQueryorderurl() {
+        return mapping.getProperty("queryorder");
     }
 
 }
