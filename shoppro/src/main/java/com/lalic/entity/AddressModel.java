@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity(name = "shop_address")
 @Table(name = "shop_address")
-public class AddressModel {
+public class  AddressModel {
 
     @Id
     @Column(name = "userid")

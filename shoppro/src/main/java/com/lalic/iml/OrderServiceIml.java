@@ -17,6 +17,7 @@ import com.lalic.model.body.MakeOrderResp;
 import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
+import com.lalic.model.body.ReqMakeWaitOrder;
 import com.lalic.model.body.ReqRemoveOrder;
 import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
@@ -26,9 +27,11 @@ import com.lalic.util.DeliverComMapping;
 import com.lalic.util.DeliverPriceMapping;
 import com.lalic.util.OrderStatusMapping;
 import com.lalic.util.TransferSearch;
+import com.lalic.wx.Utils;
 import com.lalic.wx.WXConstant;
 import com.lalic.wx.WXPay;
 import com.lalic.wx.WXPayResResp;
+import com.lalic.wx.WXPayWeb;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -124,7 +127,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     @Transactional
-    public BaseResponse makeOrder(ReqMakeOrder makeOrder){
+    public BaseResponse makeOrder(ReqMakeOrder makeOrder) {
         CartModel cartById = cartDao.getCartById(makeOrder.getCartId());
 
         if (!"-1".equals(makeOrder.getCartId())) {
@@ -163,20 +166,68 @@ public class OrderServiceIml implements OrderService {
         MakeOrderResp ret = new MakeOrderResp();
         ret.setCreateTime(createTime);
         // TODO: 2018/9/8
-        int deliverPrice = DeliverPriceMapping.getPrice("10");
-        ret.setDeliverPrice(deliverPrice + "");
+        int deliverPrice = DeliverPriceMapping.getPrice("111");
+        ret.setDeliverPrice("" + deliverPrice);
         ret.setOrderId(order.getOrderid());
         // TODO: 2018/9/8
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(ret, order, product);
-//        String prepayId = "abc";
+        String prepayId = WXPay.makeWXPay(ret.getTotalPrice(), order.getOrderid(), order.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
         order.setPayorderid(prepayId);
         orderDao.save(order);
+
+        WXPayWeb wxPayWeb = new WXPayWeb(prepayId);
+        String sign = Utils.signweb(wxPayWeb);
+
+        ret.setNonceStr(wxPayWeb.getNonceStr());
+        ret.setPackage_(wxPayWeb.getPackage_());
+        ret.setPaySign(sign);
+        ret.setTimeStamp(wxPayWeb.getTimeStamp());
         ret.setPayOrderId(prepayId);
+
+        return new BaseResponse().setData(ret);
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse makeWaitOrder(ReqMakeWaitOrder makeOrder) throws Exception {
+
+        String orderid = makeOrder.getOrderid();
+        OrderModel orderModel = orderDao.getOrderById(orderid);
+        if(orderModel==null)
+        {
+            return new BaseResponse().setMess("非法操作").setCode(403);
+        }
+        String productid = orderModel.getProductid();
+        ProductModel product = productDao.getProductById(productid);
+        int price = orderModel.getTotalprice();
+        String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+        MakeOrderResp ret = new MakeOrderResp();
+        ret.setCreateTime(createTime);
+        int deliverPrice = DeliverPriceMapping.getPrice("111");
+        ret.setDeliverPrice("" + deliverPrice);
+        ret.setOrderId(orderModel.getOrderid());
+        ret.setTotalPrice(price + deliverPrice + "");
+        ret.setTotalProductPrice(price + "");
+        String prepayId = WXPay.makeWXPay(orderModel.getTotalprice() + "", orderModel.getOrderid(), orderModel.getUserid(), product);
+        if ("".equals(prepayId)) {
+            return new BaseResponse().setMess("获取支付信息错误").setCode(500);
+        }
+
+        orderDao.updatePrePayid(orderModel.getOrderid(), prepayId);
+
+        WXPayWeb wxPayWeb = new WXPayWeb(prepayId);
+        String sign = Utils.signweb(wxPayWeb);
+        ret.setNonceStr(wxPayWeb.getNonceStr());
+        ret.setPackage_(wxPayWeb.getPackage_());
+        ret.setPaySign(sign);
+        ret.setTimeStamp(wxPayWeb.getTimeStamp());
+        ret.setPayOrderId(prepayId);
+
         return new BaseResponse().setData(ret);
     }
 
@@ -258,6 +309,7 @@ public class OrderServiceIml implements OrderService {
             orderDao.confirmPay(orderid);
             response.setData(WXConstant.PAY_SUCCESS);
         }
+        response.setData(wxPayResResp.getTrade_state());
         return response;
     }
 

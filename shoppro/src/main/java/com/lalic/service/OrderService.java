@@ -7,6 +7,7 @@ import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
+import com.lalic.model.body.ReqMakeWaitOrder;
 import com.lalic.model.body.ReqRemoveOrder;
 import com.lalic.model.body.ReturnableResp;
 
@@ -18,6 +19,8 @@ public interface OrderService {
     AllOrderResp getOrderByUserid(String userid);
 
     BaseResponse makeOrder(ReqMakeOrder makeOrder) throws Exception;
+
+    BaseResponse makeWaitOrder(ReqMakeWaitOrder makeOrder) throws Exception;
 
     DeliverResp getDeliverInfoByOrderId(String orderId);
 

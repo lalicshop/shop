@@ -38,4 +38,8 @@ public interface OrderDao
     @Modifying
     void confirmPay(@Param(value = "orderid") String orderid);
 
+    @Query(value = "UPDATE shop_order SET payorderid=:payorderid WHERE orderid=:orderid", nativeQuery = true)
+    @Modifying
+    void updatePrePayid(@Param(value = "orderid") String orderid, @Param(value = "payorderid") String payorderid);
+
 }

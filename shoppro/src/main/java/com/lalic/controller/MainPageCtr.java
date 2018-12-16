@@ -7,6 +7,8 @@ import com.lalic.model.body.MainPageResp;
 import com.lalic.service.JingXuanService;
 import com.lalic.service.LunBoService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/mainpage")
 public class MainPageCtr {
+    private static final Logger logger = LoggerFactory.getLogger(AddressCtr.class);
 
     @Autowired
     LunBoService lunBoService;
@@ -39,6 +42,7 @@ public class MainPageCtr {
 
     @RequestMapping(value = "/main")
     public BaseResponse getMainPage() {
+        logger.info("mainpage/main");
         BaseResponse response = new BaseResponse();
         List<LunBoModel> lunBo = lunBoService.getLunBo();
         List<JingXuan> jingXuan = jingXuanService.getJingXuan();

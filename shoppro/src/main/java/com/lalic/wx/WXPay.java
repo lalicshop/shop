@@ -1,9 +1,7 @@
 package com.lalic.wx;
 
-import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
 import com.lalic.http.SimpleHttp;
-import com.lalic.model.body.MakeOrderResp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,15 +10,15 @@ public class WXPay {
 
     private static final Logger logger = LoggerFactory.getLogger(WXPay.class);
 
-    public static String makeWXPay(MakeOrderResp mess, OrderModel order, ProductModel product) {
+    public static String makeWXPay(String totalprice, String orderid, String userid, ProductModel product) {
 
         WXPayParams pay = new WXPayParams();
         pay.setBody(product.getShortname());
-        pay.setOut_trade_no(order.getOrderid());
-        pay.setTotal_fee(Integer.valueOf(mess.getTotalPrice()) * 100);
+        pay.setOut_trade_no(orderid);
+        pay.setTotal_fee(Integer.valueOf(totalprice));
         pay.setSpbill_create_ip(WXConstant.getLocalIP());
         pay.setNotify_url("http://www.baidu.com");
-        pay.setOpenid("ouccJ4y88qLWUFv_PKdka80zJv6Q");
+        pay.setOpenid(userid);
         pay.setSign(Utils.signPay(pay));
 
         String postBody = Utils.makeXML(pay, WXPayParams.class);

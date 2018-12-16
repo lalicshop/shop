@@ -49,6 +49,11 @@ public class ReturnServiceIml implements ReturnService {
             return new BaseResponse().setCode(400).setMess("输入错误");
         }
 
+        if(toRetCount<1)
+        {
+            return new BaseResponse().setCode(400).setMess("输入错误");
+        }
+
         OrderModel order = null;
         try {
             order = orderDao.getOrderById(makeRet.getOrderid());
@@ -65,7 +70,7 @@ public class ReturnServiceIml implements ReturnService {
         }
         int canBeRetCount = Integer.valueOf(order.getQuantity()) - Integer.valueOf(order.getRetquantity());
         if (canBeRetCount < toRetCount) {
-            return new BaseResponse().setCode(403).setMess("非法操作");
+            return new BaseResponse().setCode(400).setMess("输入错误");
         }
 
         ReturnModel rm = new ReturnModel();

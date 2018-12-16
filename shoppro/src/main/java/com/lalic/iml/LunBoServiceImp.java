@@ -3,6 +3,7 @@ package com.lalic.iml;
 import com.lalic.dao.LunBoDao;
 import com.lalic.entity.LunBoModel;
 import com.lalic.service.LunBoService;
+import com.lalic.util.Constant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,10 @@ public class LunBoServiceImp implements LunBoService {
 
     @Override
     public List<LunBoModel> getLunBo() {
-        return lunBoDao.getLunBo();
+        List<LunBoModel> lunBo = lunBoDao.getLunBo();
+        for (LunBoModel lunBoModel : lunBo) {
+            lunBoModel.setLunboimgurl(Constant.getLocalHttp() + lunBoModel.getLunboimgurl());
+        }
+        return lunBo;
     }
 }

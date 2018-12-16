@@ -27,7 +27,10 @@ public class WXServiceIml implements WXService {
         }
         UserModel user = new UserModel();
         user.setUserid(openid);
-        dao.save(user);
+        if(!dao.existsById(openid))
+        {
+            dao.save(user);
+        }
         return openid;
     }
 }

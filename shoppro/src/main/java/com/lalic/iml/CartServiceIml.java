@@ -9,6 +9,8 @@ import com.lalic.model.body.ReqRemoveCart;
 import com.lalic.service.CartService;
 import com.lalic.util.Constant;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Component
 public class CartServiceIml implements CartService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CartServiceIml.class);
 
     @Autowired
     ProductDao productDao;
@@ -54,8 +58,11 @@ public class CartServiceIml implements CartService {
     public boolean putInCart(CartModel cartModel) {
         try {
             cartDao.save(cartModel);
+            logger.info("putin cart success");
             return true;
         } catch (Exception e) {
+            logger.error("putin cart failed");
+            e.printStackTrace();
             return false;
         }
     }

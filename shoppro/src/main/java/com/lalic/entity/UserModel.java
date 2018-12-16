@@ -25,7 +25,7 @@ public class UserModel {
     @Column(name = "city")
     private String city;
 
-    @Column(name = "conutry")
+    @Column(name = "country")
     private String conutry;
 
     @Column(name = "headimgurl")
