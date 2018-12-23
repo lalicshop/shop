@@ -24,7 +24,7 @@ public interface AddressDao
     @Modifying
     void deleteByAddressid(@Param(value = "addressid") String addressid);
 
-    @Query(value = "UPDATE shop_address SET province=:province,city=:city,district=:district,detail=:detail,username=:username,phone=:phone WHERE userid=:userid", nativeQuery = true)
+    @Query(value = "UPDATE shop_address SET province=:province,city=:city,district=:district,detail=:detail,username=:username,phone=:phone,cm=:cm,kg=:kg WHERE userid=:userid", nativeQuery = true)
     @Modifying
     void update(@Param(value = "userid") String userid,
                 @Param(value = "province") String province,
@@ -32,6 +32,8 @@ public interface AddressDao
                 @Param(value = "district") String district,
                 @Param(value = "detail") String detail,
                 @Param(value = "username") String username,
-                @Param(value = "phone") String phone);
+                @Param(value = "phone") String phone,
+                @Param(value = "cm") String cm,
+                @Param(value = "kg") String kg);
 
 }

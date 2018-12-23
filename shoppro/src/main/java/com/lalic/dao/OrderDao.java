@@ -42,4 +42,7 @@ public interface OrderDao
     @Modifying
     void updatePrePayid(@Param(value = "orderid") String orderid, @Param(value = "payorderid") String payorderid);
 
+    @Query(value = "SELECT * FROM shop_order WHERE  `status`=2", nativeQuery = true)
+    List<OrderModel> notDeliver();
+
 }

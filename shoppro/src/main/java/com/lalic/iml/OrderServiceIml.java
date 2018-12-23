@@ -314,6 +314,18 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
+    public BaseResponse opsNotDeliver() {
+        return new BaseResponse().setData(orderDao.notDeliver());
+    }
+
+    @Override
+    public BaseResponse opsConfirmOrder(ReqConfirmOrder reqConfirmOrder) {
+        String orderid = reqConfirmOrder.getOrderid();
+        orderDao.confirmOrder(orderid);
+        return new BaseResponse();
+    }
+
+    @Override
     @Transactional
     public BaseResponse confirmOrder(ReqConfirmOrder reqConfirmOrder) {
         String orderid = reqConfirmOrder.getOrderid();

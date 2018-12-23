@@ -33,7 +33,7 @@ public class AddressServiceIml implements AddressService {
             addressDao.save(address);
         } else {
             logger.info("address update, userid is "+address.getUserid());
-            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail(),address.getUsername(),address.getPhone());
+            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail(),address.getUsername(),address.getPhone(),address.getCm(),address.getKg());
         }
     }
 

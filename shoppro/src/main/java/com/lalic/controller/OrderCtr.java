@@ -4,7 +4,6 @@ import com.lalic.entity.OrderModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.ReqConfirmOrder;
-import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
 import com.lalic.model.body.ReqMakeWaitOrder;
 import com.lalic.model.body.ReqOrder;
@@ -135,13 +134,6 @@ public class OrderCtr {
     public BaseResponse confirmPay(@PathVariable String orderid) {
         BaseResponse response = orderService.confirmPay(orderid);
         return response;
-    }
-
-
-    //内部接口
-    @RequestMapping(value = "/deliverorder", method = RequestMethod.POST)
-    public BaseResponse deliverOrder(@RequestBody ReqDeliverOrder order) {
-        return orderService.deliverOrder(order);
     }
 
 }

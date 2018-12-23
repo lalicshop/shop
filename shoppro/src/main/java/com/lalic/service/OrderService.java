@@ -35,4 +35,9 @@ public interface OrderService {
     ReturnableResp.Inner getOneReturn(String userid, String orderid);
 
     BaseResponse confirmPay(String orderid);
+
+    BaseResponse opsNotDeliver();
+
+    BaseResponse opsConfirmOrder(ReqConfirmOrder orderId);
+
 }
