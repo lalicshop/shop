@@ -53,4 +53,9 @@ public class Ops {
         return orderService.opsConfirmOrder(confirmOrder);
     }
 
+    // todo 根据物流单号查orderid
+    @RequestMapping(value = "/orderbydeliverid/{orderid}", method = RequestMethod.GET)
+    public BaseResponse orderByDeliverId(@PathVariable String orderid) {
+        return null;
+    }
 }

@@ -22,7 +22,7 @@ public class DeliverModel {
     private String company;
 
     @Column(name = "detime")
-    private long detime;
+    private String detime;
 
     @Column(name = "origination")
     private String origination;
@@ -57,11 +57,11 @@ public class DeliverModel {
         this.company = company;
     }
 
-    public long getDetime() {
+    public String getDetime() {
         return detime;
     }
 
-    public void setDetime(long detime) {
+    public void setDetime(String detime) {
         this.detime = detime;
     }
 

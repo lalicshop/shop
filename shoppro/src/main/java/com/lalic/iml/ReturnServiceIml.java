@@ -1,8 +1,10 @@
 package com.lalic.iml;
 
+import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.ProductDao;
 import com.lalic.dao.ReturnDao;
+import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
 import com.lalic.entity.ReturnModel;
@@ -36,6 +38,9 @@ public class ReturnServiceIml implements ReturnService {
     @Autowired
     ProductDao productDao;
 
+    @Autowired
+    DeliverDao deliverDao;
+
 
     @Override
     @Transactional
@@ -49,8 +54,7 @@ public class ReturnServiceIml implements ReturnService {
             return new BaseResponse().setCode(400).setMess("输入错误");
         }
 
-        if(toRetCount<1)
-        {
+        if (toRetCount < 1) {
             return new BaseResponse().setCode(400).setMess("输入错误");
         }
 
@@ -61,8 +65,7 @@ public class ReturnServiceIml implements ReturnService {
             e.printStackTrace();
             return new BaseResponse().setCode(400).setMess("输入错误");
         }
-        if(order==null)
-        {
+        if (order == null) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
         if (!Constant.RENT.equals(order.getBuy_rent())) {
@@ -103,15 +106,15 @@ public class ReturnServiceIml implements ReturnService {
     @Override
     @Transactional
     public BaseResponse confirmReturn(ReqConfirmRet makeRet) {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        returnDao.confirmRet(makeRet.getMoney(),makeRet.getDeliverno(),sdf.format(new Date()));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        returnDao.confirmRet(makeRet.getMoney(), makeRet.getDeliverno(), sdf.format(new Date()));
         return new BaseResponse();
     }
 
     @Override
     @Transactional
     public BaseResponse getItem(ReqOrder reqOrder, String retid) {
-        BaseResponse ret=new BaseResponse();
+        BaseResponse ret = new BaseResponse();
         Optional<ReturnModel> byId = returnDao.findById(retid);
         if (!byId.isPresent()) {
             return ret.setCode(403).setMess("非法操作");
@@ -125,8 +128,10 @@ public class ReturnServiceIml implements ReturnService {
 
         ProductModel product = productDao.getProductById(order.getProductid());
 
-        RetItemResp rit=new RetItemResp(returnModel,product.getProductid(),product.getMainpic(),product.getDetailname());
-        Object o = TransferSearch.SearchById(returnModel.getDeliverno());
+        DeliverModel deliverByOrderId = deliverDao.getDeliverByOrderId(order.getOrderid());
+
+        RetItemResp rit = new RetItemResp(returnModel, product.getProductid(), product.getMainpic(), product.getDetailname());
+        Object o = TransferSearch.SearchById(deliverByOrderId.getCompany(), returnModel.getDeliverno());
         rit.setDeliverDetail(o);
 
         return ret.setData(rit);

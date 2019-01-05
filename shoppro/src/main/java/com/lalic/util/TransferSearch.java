@@ -1,23 +1,34 @@
 package com.lalic.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+import com.lalic.http.SimpleHttp;
+import com.lalic.model.body.DeliverSearch;
 
 public class TransferSearch {
 
+    public static Object SearchById(String com, String transferid) {
 
-    public static Object SearchById(String transferid)
-    {
-        List list=new ArrayList();
-        for (int i = 0; i < 3; i++) {
-            Map<String,String> map=new HashMap<>();
-            map.put("time","2018-09-13 20:55:00");
-            map.put("content","到达西安");
-            list.add(map);
+        try {
+            String url = DeliverComMapping.getSearchUrl() + DeliverComMapping.getDeliverCom(com) + "&postid=" + transferid;
+
+            SimpleHttp.Response response = SimpleHttp.get(url, null);
+
+            if (response.getCode() >= 200 && response.getCode() <= 299) {
+
+                DeliverSearch deliverSearch = JSON.parseObject(response.getBody(), DeliverSearch.class);
+                if (deliverSearch.getStatus().equals("200")) {
+                    return deliverSearch.getData();
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return list;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(SearchById("zt", "75119489155366"));
     }
 
 }

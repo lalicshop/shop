@@ -50,7 +50,6 @@ public class OrderCtr {
     }
 
 
-    //todo 修改
     @RequestMapping(value = "/deliver/{orderid}", method = RequestMethod.POST)
     public BaseResponse getOrderList(@RequestBody ReqOrder reqOrder, @PathVariable String orderid) {
         logger.info("order/deliver/{orderid}: " + reqOrder.getUserid());
@@ -107,7 +106,7 @@ public class OrderCtr {
     }
 
     /**
-     * 确认收货，暂未用
+     * 确认收货
      * @param confirmOrder
      * @return
      */

@@ -21,4 +21,8 @@ public class DeliverComMapping {
     public static String getDeliverCom(String id) {
         return mapping.getProperty(id) == null ? "" : mapping.getProperty(id);
     }
+
+    public static String getSearchUrl() {
+        return mapping.getProperty("searchurl");
+    }
 }

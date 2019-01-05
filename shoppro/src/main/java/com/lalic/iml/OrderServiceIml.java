@@ -197,8 +197,7 @@ public class OrderServiceIml implements OrderService {
 
         String orderid = makeOrder.getOrderid();
         OrderModel orderModel = orderDao.getOrderById(orderid);
-        if(orderModel==null)
-        {
+        if (orderModel == null) {
             return new BaseResponse().setMess("非法操作").setCode(403);
         }
         String productid = orderModel.getProductid();
@@ -256,8 +255,8 @@ public class OrderServiceIml implements OrderService {
         inner.setPhone(addressDao.getPhoneByUserId(order.getUserid()));
         inner.setNum(order.getQuantity());
 
-        if (Constant.ORDER_STATUS_DELIVERING.equalsIgnoreCase(order.getStatus())) {
-            deliverResp.setLogistics_detail(TransferSearch.SearchById(order.getDeliverid()));
+        if (deliver != null && Constant.ORDER_STATUS_DELIVERING.equalsIgnoreCase(order.getStatus())) {
+            deliverResp.setLogistics_detail(TransferSearch.SearchById(deliver.getCompany(), deliver.getDeliverno()));
         }
         deliverResp.setOrders(inner);
         return deliverResp;
@@ -334,18 +333,23 @@ public class OrderServiceIml implements OrderService {
         if (!order.getUserid().equals(userid)) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
-        orderDao.confirmOrder(orderid);
+        if(Constant.ORDER_STATUS_DELIVERING.equals(order.getStatus())) {
+            orderDao.confirmOrder(orderid);
+        }else {
+            return new BaseResponse().setCode(403).setMess("非法操作");
+        }
         return new BaseResponse();
     }
 
     @Override
     @Transactional
     public BaseResponse deliverOrder(ReqDeliverOrder order) {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
         orderDao.deliverOrder(order.getOrderid(), order.getDeliverid());
         DeliverModel deliver = new DeliverModel();
         deliver.setCompany(order.getDelivercom());
         deliver.setDeliverno(order.getDeliverid());
-        deliver.setDetime(new Date().getTime());
+        deliver.setDetime(sdf.format(new Date()));
         deliver.setOrderid(order.getOrderid());
         deliverDao.save(deliver);
         return new BaseResponse();
