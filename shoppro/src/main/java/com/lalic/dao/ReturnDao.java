@@ -23,4 +23,6 @@ public interface ReturnDao
                                  @Param(value = "deliverno") String deliverno,
                                  @Param(value = "reachdate") String reachdate);
 
+    @Query(value = "SELECT * FROM shop_return WHERE deliverno=:deliverno", nativeQuery = true)
+    ReturnModel findByDeliverNo(@Param(value = "deliverno") String deliverno);
 }

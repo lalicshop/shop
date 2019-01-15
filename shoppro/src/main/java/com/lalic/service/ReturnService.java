@@ -17,4 +17,6 @@ public interface ReturnService {
     BaseResponse confirmReturn(ReqConfirmRet makeRet);
 
     BaseResponse getItem(ReqOrder reqOrder, String retid);
+
+    BaseResponse returning(String deliverno);
 }

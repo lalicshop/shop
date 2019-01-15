@@ -22,13 +22,13 @@ public interface OrderDao
     @Query(value = "SELECT * FROM shop_order WHERE userid=:userid AND `status`=:statusid", nativeQuery = true)
     List<OrderModel> getOrderByStatus(@Param(value = "userid") String userid, @Param(value = "statusid") String statusid);
 
-    @Query(value = "UPDATE shop_order SET `status`=4 WHERE orderid=:orderid", nativeQuery = true)
+    @Query(value = "UPDATE shop_order SET `status`=4, reachdate=:reachdate WHERE orderid=:orderid", nativeQuery = true)
     @Modifying
-    void confirmOrder(@Param(value = "orderid") String orderid);
+    void confirmOrder(@Param(value = "orderid") String orderid, @Param(value = "reachdate") String reachdate);
 
-    @Query(value = "UPDATE shop_order SET `status`=3 ,deliverid=:deliverid WHERE orderid=:orderid", nativeQuery = true)
+    @Query(value = "UPDATE shop_order SET `status`=3 ,deliverid=:deliverid,deliverdate=:deliverdate WHERE orderid=:orderid", nativeQuery = true)
     @Modifying
-    void deliverOrder(@Param(value = "orderid") String orderid, @Param(value = "deliverid") String deliverid);
+    void deliverOrder(@Param(value = "orderid") String orderid, @Param(value = "deliverid") String deliverid, @Param(value = "deliverdate") String deliverdate);
 
     @Query(value = "UPDATE shop_order SET retquantity=:retquantity WHERE orderid=:orderid", nativeQuery = true)
     @Modifying
@@ -44,5 +44,11 @@ public interface OrderDao
 
     @Query(value = "SELECT * FROM shop_order WHERE  `status`=2", nativeQuery = true)
     List<OrderModel> notDeliver();
+
+    @Query(value = "SELECT * FROM shop_order WHERE  deliverid=:deliverid", nativeQuery = true)
+    OrderModel orderByDeliverId(@Param(value = "deliverid") String deliverid);
+
+    @Query(value = "SELECT * FROM shop_order WHERE `status`=:statusid", nativeQuery = true)
+    List<OrderModel> getOrderByStatus(@Param(value = "statusid") String statusid);
 
 }

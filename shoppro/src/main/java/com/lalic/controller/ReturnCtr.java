@@ -62,10 +62,6 @@ public class ReturnCtr {
     }
 
 
-    //内部接口
-    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
-    public BaseResponse confirmReturn(@RequestBody ReqConfirmRet confirmRet) {
-        return returnService.confirmReturn(confirmRet);
-    }
+
 
 }

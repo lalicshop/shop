@@ -38,6 +38,7 @@ public interface OrderService {
 
     BaseResponse opsNotDeliver();
 
-    BaseResponse opsConfirmOrder(ReqConfirmOrder orderId);
+    BaseResponse opsOrderByDeliverNo(String deliverid);
 
+    BaseResponse getWaitConfirmOrder();
 }

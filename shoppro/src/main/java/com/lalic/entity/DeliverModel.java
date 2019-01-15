@@ -13,7 +13,7 @@ public class DeliverModel {
 
     @Id
     @Column(name = "deliverid")
-    private String deliverid= UUID.randomUUID().toString();
+    private String deliverid = UUID.randomUUID().toString();
 
     @Column(name = "deliverno")
     private String deliverno;

@@ -136,4 +136,11 @@ public class ReturnServiceIml implements ReturnService {
 
         return ret.setData(rit);
     }
+
+    @Override
+    public BaseResponse returning(String deliverno) {
+        ReturnModel byDeliverNo = returnDao.findByDeliverNo(deliverno);
+        return new BaseResponse().setData(byDeliverNo);
+    }
+
 }

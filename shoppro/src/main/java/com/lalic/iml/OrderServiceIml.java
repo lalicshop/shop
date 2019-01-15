@@ -318,11 +318,24 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-    public BaseResponse opsConfirmOrder(ReqConfirmOrder reqConfirmOrder) {
-        String orderid = reqConfirmOrder.getOrderid();
-        orderDao.confirmOrder(orderid);
+    public BaseResponse opsOrderByDeliverNo(String deliverno) {
+
+        DeliverModel deliver = deliverDao.getDeliverByDeliverNo(deliverno);
+        if(deliver!=null)
+        {
+            OrderModel orderModel = orderDao.getOrderById(deliver.getOrderid());
+
+            return new BaseResponse().setData(orderModel);
+        }
         return new BaseResponse();
     }
+
+    @Override
+    public BaseResponse getWaitConfirmOrder() {
+        List<OrderModel> orderByStatus = orderDao.getOrderByStatus(Constant.ORDER_STATUS_DELIVERING);
+        return new BaseResponse().setData(orderByStatus);
+    }
+
 
     @Override
     @Transactional
@@ -333,9 +346,10 @@ public class OrderServiceIml implements OrderService {
         if (!order.getUserid().equals(userid)) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
-        if(Constant.ORDER_STATUS_DELIVERING.equals(order.getStatus())) {
-            orderDao.confirmOrder(orderid);
-        }else {
+        if (Constant.ORDER_STATUS_DELIVERING.equals(order.getStatus())) {
+            String reachTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            orderDao.confirmOrder(orderid,reachTime);
+        } else {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
         return new BaseResponse();
@@ -344,13 +358,15 @@ public class OrderServiceIml implements OrderService {
     @Override
     @Transactional
     public BaseResponse deliverOrder(ReqDeliverOrder order) {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-        orderDao.deliverOrder(order.getOrderid(), order.getDeliverid());
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        orderDao.deliverOrder(order.getOrderid(), order.getDeliverid(),sdf.format(date));
         DeliverModel deliver = new DeliverModel();
         deliver.setCompany(order.getDelivercom());
         deliver.setDeliverno(order.getDeliverid());
-        deliver.setDetime(sdf.format(new Date()));
+        deliver.setDetime(sdf.format(date));
         deliver.setOrderid(order.getOrderid());
+        deliver.setDeliverid(order.getDeliverid());
         deliverDao.save(deliver);
         return new BaseResponse();
     }
