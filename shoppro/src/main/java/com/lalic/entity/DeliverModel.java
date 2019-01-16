@@ -24,12 +24,6 @@ public class DeliverModel {
     @Column(name = "detime")
     private String detime;
 
-    @Column(name = "origination")
-    private String origination;
-
-    @Column(name = "destination")
-    private String destination;
-
     @Column(name = "orderid")
     private String orderid;
 
@@ -63,22 +57,6 @@ public class DeliverModel {
 
     public void setDetime(String detime) {
         this.detime = detime;
-    }
-
-    public String getOrigination() {
-        return origination;
-    }
-
-    public void setOrigination(String origination) {
-        this.origination = origination;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
     }
 
     public String getOrderid() {

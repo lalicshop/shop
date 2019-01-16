@@ -321,8 +321,7 @@ public class OrderServiceIml implements OrderService {
     public BaseResponse opsOrderByDeliverNo(String deliverno) {
 
         DeliverModel deliver = deliverDao.getDeliverByDeliverNo(deliverno);
-        if(deliver!=null)
-        {
+        if (deliver != null) {
             OrderModel orderModel = orderDao.getOrderById(deliver.getOrderid());
 
             return new BaseResponse().setData(orderModel);
@@ -348,7 +347,7 @@ public class OrderServiceIml implements OrderService {
         }
         if (Constant.ORDER_STATUS_DELIVERING.equals(order.getStatus())) {
             String reachTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            orderDao.confirmOrder(orderid,reachTime);
+            orderDao.confirmOrder(orderid, reachTime);
         } else {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
@@ -360,7 +359,14 @@ public class OrderServiceIml implements OrderService {
     public BaseResponse deliverOrder(ReqDeliverOrder order) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        orderDao.deliverOrder(order.getOrderid(), order.getDeliverid(),sdf.format(date));
+        OrderModel orderById = orderDao.getOrderById(order.getOrderid());
+        if (orderById == null) {
+            return new BaseResponse().setMess("此单不存在");
+        }
+        if (!Constant.ORDER_STATUS_PAID.equals(orderById.getStatus())) {
+            return new BaseResponse().setMess("此单未支付或已处理");
+        }
+        orderDao.deliverOrder(order.getOrderid(), order.getDeliverid(), sdf.format(date));
         DeliverModel deliver = new DeliverModel();
         deliver.setCompany(order.getDelivercom());
         deliver.setDeliverno(order.getDeliverid());
