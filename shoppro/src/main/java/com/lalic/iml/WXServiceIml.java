@@ -1,8 +1,8 @@
 package com.lalic.iml;
 
 import com.alibaba.fastjson.JSON;
-import com.lalic.dao.UserDao;
-import com.lalic.entity.UserModel;
+import com.lalic.dao.AddressDao;
+import com.lalic.entity.AddressModel;
 import com.lalic.http.SimpleHttp;
 import com.lalic.service.WXService;
 import com.lalic.wx.WXConstant;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class WXServiceIml implements WXService {
 
     @Autowired
-    UserDao dao;
+    AddressDao addressDao;
 
     @Override
     public String getOpenid(String usercode) {
@@ -25,12 +25,16 @@ public class WXServiceIml implements WXService {
         if (openid == null) {
             return "";
         }
-        UserModel user = new UserModel();
-        user.setUserid(openid);
-        if(!dao.existsById(openid))
-        {
-            dao.save(user);
-        }
+//        UserModel user = new UserModel();
+//        user.setUserid(openid);
+//        if(!dao.existsById(openid))
+//        {
+//            dao.save(user);
+//        }
+        AddressModel model=new AddressModel();
+        model.setUserid(openid);
+        addressDao.save(model);
+
         return openid;
     }
 }

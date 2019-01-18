@@ -2,6 +2,7 @@ package com.lalic.iml;
 
 import com.lalic.dao.ProductDao;
 import com.lalic.entity.ProductModel;
+import com.lalic.model.BaseResponse;
 import com.lalic.model.body.FleshPartIDResp;
 import com.lalic.model.body.ProductDetailResp;
 import com.lalic.service.ProductService;
@@ -26,8 +27,14 @@ public class ProductServiceIml implements ProductService {
     }
 
     @Override
-    public ProductDetailResp getProductById(String id) {
+    public BaseResponse getProductById(String id) {
         ProductModel product = productDao.getProductById(id);
+
+        if(product==null)
+        {
+            return new BaseResponse().setMess("参数错误").setCode(400);
+        }
+
         ProductDetailResp pdr = new ProductDetailResp();
         ProductDetailResp.Goods goods = new ProductDetailResp.Goods();
         ProductDetailResp.Attributes attributes = new ProductDetailResp.Attributes();
@@ -49,7 +56,7 @@ public class ProductServiceIml implements ProductService {
         pdr.setSubImgUrls(Arrays.asList(product.getSubpic().split(";")));
         pdr.setDetailImgUrls(Arrays.asList(product.getDetailpic().split(";")));
 
-        return pdr;
+        return new BaseResponse().setData(pdr);
     }
 
     @Override

@@ -15,6 +15,9 @@ public class OrderModel {
     @Column(name = "orderid")
     private String orderid = UUID.randomUUID().toString().replace("-","");
 
+    @Column(name = "waitpayid")
+    private String waitpayid;
+
     @Column(name = "payorderid")
     private String payorderid;
 
@@ -62,6 +65,14 @@ public class OrderModel {
 
     @Column(name = "kg")
     private String kg;
+
+    public String getWaitpayid() {
+        return waitpayid;
+    }
+
+    public void setWaitpayid(String waitpayid) {
+        this.waitpayid = waitpayid;
+    }
 
     public String getCm() {
         return cm;

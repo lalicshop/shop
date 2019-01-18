@@ -21,9 +21,7 @@ public class ProductCtr {
     @RequestMapping(value = "/productid/{productid}")
     public BaseResponse getJingXuan(@PathVariable String productid) {
         logger.info("/product/productid/{productid} : "+productid);
-        BaseResponse response = new BaseResponse();
-        response.setData(productService.getProductById(productid));
-        return response;
+        return productService.getProductById(productid);
     }
 
     @RequestMapping(value = "/fleshpart/fleshpartid/{fleshpartid}")

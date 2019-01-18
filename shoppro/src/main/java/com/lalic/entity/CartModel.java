@@ -13,7 +13,7 @@ public class CartModel {
 
     @Id
     @Column(name = "cartid")
-    private String cartid= UUID.randomUUID().toString();
+    private String cartid= UUID.randomUUID().toString().replaceAll("-","");
 
     @Column(name = "userid")
     private String userid;

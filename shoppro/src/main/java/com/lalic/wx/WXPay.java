@@ -17,7 +17,7 @@ public class WXPay {
         pay.setOut_trade_no(orderid);
         pay.setTotal_fee(Integer.valueOf(totalprice));
         pay.setSpbill_create_ip(WXConstant.getLocalIP());
-        pay.setNotify_url("http://www.baidu.com");
+        pay.setNotify_url("https://www.senderkong.com/");
         pay.setOpenid(userid);
         pay.setSign(Utils.signPay(pay));
 

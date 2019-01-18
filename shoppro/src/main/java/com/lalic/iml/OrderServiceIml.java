@@ -40,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class OrderServiceIml implements OrderService {
@@ -130,6 +131,10 @@ public class OrderServiceIml implements OrderService {
     public BaseResponse makeOrder(ReqMakeOrder makeOrder) {
         CartModel cartById = cartDao.getCartById(makeOrder.getCartId());
 
+        if (cartById == null) {
+            return new BaseResponse().setMess("非法操作").setCode(400);
+        }
+
         if (!"-1".equals(makeOrder.getCartId())) {
             //-1代表是从未支付订单列表跳过来支付的，不是从购物车过来的
             if (cartDao.existsById(makeOrder.getCartId())) {
@@ -150,6 +155,7 @@ public class OrderServiceIml implements OrderService {
         }
         price = price * Integer.valueOf(count);
         OrderModel order = new OrderModel();
+        order.setWaitpayid(order.getOrderid());
         order.setBuy_rent(cartById.getBuyrent());
         order.setProductid(cartById.getProductid());
         order.setQuantity(cartById.getProductcount());
@@ -172,7 +178,7 @@ public class OrderServiceIml implements OrderService {
         // TODO: 2018/9/8
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(ret.getTotalPrice(), order.getOrderid(), order.getUserid(), product);
+        String prepayId = WXPay.makeWXPay(ret.getTotalPrice(), order.getWaitpayid(), order.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
@@ -197,9 +203,16 @@ public class OrderServiceIml implements OrderService {
 
         String orderid = makeOrder.getOrderid();
         OrderModel orderModel = orderDao.getOrderById(orderid);
+
         if (orderModel == null) {
             return new BaseResponse().setMess("非法操作").setCode(403);
         }
+
+        //支付待支付订单时，商户订单号不能和之前的重复，所以需要更新waitpayid
+        String newwaitpayid = UUID.randomUUID().toString().replace("-", "");
+        orderDao.updateWaitPayId(orderid, newwaitpayid);
+        orderModel.setWaitpayid(newwaitpayid);
+
         String productid = orderModel.getProductid();
         ProductModel product = productDao.getProductById(productid);
         int price = orderModel.getTotalprice();
@@ -212,7 +225,7 @@ public class OrderServiceIml implements OrderService {
         ret.setOrderId(orderModel.getOrderid());
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(orderModel.getTotalprice() + "", orderModel.getOrderid(), orderModel.getUserid(), product);
+        String prepayId = WXPay.makeWXPay(orderModel.getTotalprice() + "", orderModel.getWaitpayid(), orderModel.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
@@ -298,14 +311,23 @@ public class OrderServiceIml implements OrderService {
     @Transactional
     public BaseResponse confirmPay(String orderid) {
         BaseResponse response = new BaseResponse();
+        OrderModel orderById = orderDao.getOrderById(orderid);
 
-        WXPayResResp wxPayResResp = WXPay.searchPayRes(orderid);
+        if(orderById==null)
+        {
+            return new BaseResponse().setCode(400).setMess("非法操作");
+        }
+
+        String waitpayid = orderById.getWaitpayid();//最终是用这个id支付的
+        WXPayResResp wxPayResResp = WXPay.searchPayRes(waitpayid);
+
         if (wxPayResResp == null) {
             //http请求失败
             return response.setCode(500).setMess("查询失败");
         }
         if (WXConstant.PAY_SUCCESS.equals(wxPayResResp.getTrade_state())) {
-            orderDao.confirmPay(orderid);
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            orderDao.confirmPay(orderid,sdf.format(new Date()));
             response.setData(WXConstant.PAY_SUCCESS);
         }
         response.setData(wxPayResResp.getTrade_state());

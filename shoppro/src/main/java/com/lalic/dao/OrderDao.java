@@ -34,9 +34,9 @@ public interface OrderDao
     @Modifying
     void updateRetquantity(@Param(value = "orderid") String orderid, @Param(value = "retquantity") String retquantity);
 
-    @Query(value = "UPDATE shop_order SET `status`=2 WHERE orderid=:orderid", nativeQuery = true)
+    @Query(value = "UPDATE shop_order SET `status`=2,paydate=:paydate WHERE orderid=:orderid", nativeQuery = true)
     @Modifying
-    void confirmPay(@Param(value = "orderid") String orderid);
+    void confirmPay(@Param(value = "orderid") String orderid,@Param(value = "paydate") String paydate);
 
     @Query(value = "UPDATE shop_order SET payorderid=:payorderid WHERE orderid=:orderid", nativeQuery = true)
     @Modifying
@@ -51,4 +51,7 @@ public interface OrderDao
     @Query(value = "SELECT * FROM shop_order WHERE `status`=:statusid", nativeQuery = true)
     List<OrderModel> getOrderByStatus(@Param(value = "statusid") String statusid);
 
+    @Query(value = "UPDATE shop_order SET waitpayid=:newwaitpayid WHERE orderid=:orderid", nativeQuery = true)
+    @Modifying
+    void updateWaitPayId(@Param(value = "orderid") String orderid, @Param(value = "newwaitpayid") String newwaitpayid);
 }

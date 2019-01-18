@@ -14,28 +14,28 @@ public class  AddressModel {
     private String userid;
 
     @Column(name = "province")
-    private String province;
+    private String province="";
 
     @Column(name = "city")
-    private String city;
+    private String city="";
 
     @Column(name = "district")
-    private String district;
+    private String district="";
 
     @Column(name = "detail")
-    private String detail;
+    private String detail="";
 
     @Column(name = "username")
-    private String username;
+    private String username="";
 
     @Column(name = "phone")
-    private String phone;
+    private String phone="";
 
     @Column(name = "cm")
-    private String cm;
+    private String cm="";
 
     @Column(name = "kg")
-    private String kg;
+    private String kg="";
 
     public String getCm() {
         return cm;
