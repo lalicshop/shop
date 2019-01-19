@@ -25,10 +25,10 @@ import com.lalic.model.body.ReturnableResp;
 import com.lalic.service.OrderService;
 import com.lalic.util.BuyRentMapping;
 import com.lalic.util.Constant;
-import com.lalic.util.DeliverComMapping;
 import com.lalic.util.DeliverPriceMapping;
 import com.lalic.util.OrderStatusMapping;
 import com.lalic.util.TransferSearch;
+import com.lalic.util.ZhDeliverComMapping;
 import com.lalic.wx.Utils;
 import com.lalic.wx.WXConstant;
 import com.lalic.wx.WXPay;
@@ -255,7 +255,7 @@ public class OrderServiceIml implements OrderService {
         DeliverResp.Inner inner = new DeliverResp.Inner();
         if (deliver != null) {
             inner.setExpress_number(deliver.getDeliverno());
-            inner.setCompany(DeliverComMapping.getDeliverCom(deliver.getCompany()));
+            inner.setCompany(ZhDeliverComMapping.getDeliverCom(deliver.getCompany()));
         }
         inner.setDescription(product.getDetailname());
         inner.setDue_date(order.getGeneratedate());
