@@ -107,8 +107,11 @@ public class ReturnServiceIml implements ReturnService {
     @Transactional
     public BaseResponse confirmReturn(ReqConfirmRet makeRet) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        returnDao.confirmRet(makeRet.getMoney(), makeRet.getDeliverno(), sdf.format(new Date()));
-        return new BaseResponse();
+        ReturnModel byDeliverNo = returnDao.findByDeliverNo(makeRet.getDeliverno());
+        if (byDeliverNo == null) {
+            return new BaseResponse().setMess("未查到该运单: " + makeRet.getDeliverno() + " 对应的订单");
+        }
+        return new BaseResponse().setMess("确认成功！").setData(returnDao.confirmRet(makeRet.getMoney(), makeRet.getDeliverno(), sdf.format(new Date())));
     }
 
     @Override

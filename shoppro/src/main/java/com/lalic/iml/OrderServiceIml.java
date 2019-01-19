@@ -6,6 +6,7 @@ import com.lalic.dao.DeliverDao;
 import com.lalic.dao.OrderDao;
 import com.lalic.dao.OrderDetailDao;
 import com.lalic.dao.ProductDao;
+import com.lalic.entity.AddressModel;
 import com.lalic.entity.CartModel;
 import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
@@ -14,6 +15,7 @@ import com.lalic.model.BaseResponse;
 import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.DeliverResp;
 import com.lalic.model.body.MakeOrderResp;
+import com.lalic.model.body.NotDeliver;
 import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqDeliverOrder;
 import com.lalic.model.body.ReqMakeOrder;
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -178,7 +181,7 @@ public class OrderServiceIml implements OrderService {
         // TODO: 2018/9/8
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(ret.getTotalPrice(), order.getWaitpayid(), order.getUserid(), product);
+        String prepayId = WXPay.makeWXPay(order.getOrderid(),ret.getTotalPrice(), order.getWaitpayid(), order.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
@@ -225,7 +228,7 @@ public class OrderServiceIml implements OrderService {
         ret.setOrderId(orderModel.getOrderid());
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(orderModel.getTotalprice() + "", orderModel.getWaitpayid(), orderModel.getUserid(), product);
+        String prepayId = WXPay.makeWXPay(orderModel.getOrderid(),orderModel.getTotalprice() + "", orderModel.getWaitpayid(), orderModel.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
@@ -313,8 +316,7 @@ public class OrderServiceIml implements OrderService {
         BaseResponse response = new BaseResponse();
         OrderModel orderById = orderDao.getOrderById(orderid);
 
-        if(orderById==null)
-        {
+        if (orderById == null) {
             return new BaseResponse().setCode(400).setMess("非法操作");
         }
 
@@ -326,8 +328,8 @@ public class OrderServiceIml implements OrderService {
             return response.setCode(500).setMess("查询失败");
         }
         if (WXConstant.PAY_SUCCESS.equals(wxPayResResp.getTrade_state())) {
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            orderDao.confirmPay(orderid,sdf.format(new Date()));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            orderDao.confirmPay(orderid, sdf.format(new Date()));
             response.setData(WXConstant.PAY_SUCCESS);
         }
         response.setData(wxPayResResp.getTrade_state());
@@ -336,7 +338,36 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public BaseResponse opsNotDeliver() {
-        return new BaseResponse().setData(orderDao.notDeliver());
+        List<OrderModel> orderModels = orderDao.notDeliver();
+
+        List<NotDeliver> notDelivers = new ArrayList<>();
+
+        for (OrderModel orderModel : orderModels) {
+            NotDeliver notDeliver = new NotDeliver();
+            ProductModel product = productDao.getProductById(orderModel.getProductid());
+            AddressModel address = addressDao.getAddressByUserId(orderModel.getUserid());
+            if (product == null) {
+                continue;
+            }
+
+            notDeliver.setBuyrent(BuyRentMapping.getBuyRent(orderModel.getBuy_rent()));
+            notDeliver.setCm(orderModel.getCm());
+            notDeliver.setKg(orderModel.getKg());
+            notDeliver.setOrderid(orderModel.getOrderid());
+            notDeliver.setPaydate(orderModel.getPaydate());
+            notDeliver.setProductid(product.getProductid());
+            notDeliver.setUserid(orderModel.getUserid());
+            notDeliver.setProductname(product.getDetailname());
+            notDeliver.setWxpayid(orderModel.getPayorderid());
+            notDeliver.setUsername(address.getUsername());
+            notDeliver.setAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getDetail());
+            notDeliver.setPhone(address.getPhone());
+            notDeliver.setCount(orderModel.getQuantity());
+            notDelivers.add(notDeliver);
+        }
+
+
+        return new BaseResponse().setData(notDelivers);
     }
 
     @Override

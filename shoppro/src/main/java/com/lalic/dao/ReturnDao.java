@@ -19,7 +19,7 @@ public interface ReturnDao
 
     @Modifying
     @Query(value = "UPDATE shop_return SET isretmoney=1,money=:money,reachdate=:reachdate,`status`=6 WHERE deliverno=:deliverno", nativeQuery = true)
-    void confirmRet(@Param(value = "money") String money,
+    int confirmRet(@Param(value = "money") String money,
                                  @Param(value = "deliverno") String deliverno,
                                  @Param(value = "reachdate") String reachdate);
 

@@ -10,14 +10,14 @@ public class WXPay {
 
     private static final Logger logger = LoggerFactory.getLogger(WXPay.class);
 
-    public static String makeWXPay(String totalprice, String orderid, String userid, ProductModel product) {
+    public static String makeWXPay(String orderid, String totalprice, String outtradeid, String userid, ProductModel product) {
 
         WXPayParams pay = new WXPayParams();
         pay.setBody(product.getShortname());
-        pay.setOut_trade_no(orderid);
+        pay.setOut_trade_no(outtradeid);
         pay.setTotal_fee(Integer.valueOf(totalprice));
         pay.setSpbill_create_ip(WXConstant.getLocalIP());
-        pay.setNotify_url("https://www.senderkong.com/");
+        pay.setNotify_url("https://www.senderkong.com/order/confirmpay/" + orderid);
         pay.setOpenid(userid);
         pay.setSign(Utils.signPay(pay));
 

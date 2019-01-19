@@ -13,7 +13,7 @@ public class ReturnModel {
 
     @Id
     @Column(name = "returnid")
-    private String returnid = UUID.randomUUID().toString();
+    private String returnid = UUID.randomUUID().toString().replace("-","");
 
     @Column(name = "userid")
     private String userid;

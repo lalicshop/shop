@@ -1,7 +1,6 @@
 package com.lalic.controller;
 
 import com.lalic.model.BaseResponse;
-import com.lalic.model.body.ReqConfirmRet;
 import com.lalic.model.body.ReqMakeRet;
 import com.lalic.model.body.ReqOrder;
 import com.lalic.model.body.ReturnableResp;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/return")
@@ -45,7 +42,7 @@ public class ReturnCtr {
 
 
     @RequestMapping(value = "/makereturn", method = RequestMethod.POST)
-    public BaseResponse makeReturn(@RequestBody ReqMakeRet makeRet, HttpServletResponse response) {
+    public BaseResponse makeReturn(@RequestBody ReqMakeRet makeRet) {
         return returnService.makereturn(makeRet);
     }
 
