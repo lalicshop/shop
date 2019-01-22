@@ -29,11 +29,11 @@ public class AddressServiceIml implements AddressService {
     public void upsertAddress(AddressModel address) {
         AddressModel addressRes = addressDao.getAddressByUserId(address.getUserid());
         if (addressRes == null) {
-            logger.info("address save, userid is "+address.getUserid());
+            logger.info("address save, userid is " + address.getUserid());
             addressDao.save(address);
         } else {
-            logger.info("address update, userid is "+address.getUserid());
-            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail(),address.getUsername(),address.getPhone(),address.getCm(),address.getKg());
+            logger.info("address update, userid is " + address.getUserid());
+            addressDao.update(address.getUserid(), address.getProvince(), address.getCity(), address.getDistrict(), address.getDetail(), address.getUsername(), address.getPhone(), address.getCm(), address.getKg());
         }
     }
 
@@ -41,6 +41,15 @@ public class AddressServiceIml implements AddressService {
     @Transactional
     public void deleteAddress(String addressid) {
         addressDao.deleteByAddressid(addressid);
+    }
+
+    @Override
+    public String getAddressByPhone(String phone) {
+        AddressModel addressByPhone = addressDao.getAddressByPhone(phone);
+        if (addressByPhone != null) {
+            return addressByPhone.getUserid();
+        }
+        return null;
     }
 
 }

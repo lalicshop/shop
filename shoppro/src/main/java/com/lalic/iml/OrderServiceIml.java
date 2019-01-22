@@ -75,9 +75,9 @@ public class OrderServiceIml implements OrderService {
     public AllOrderResp getOrderByUserid(String userid) {
         AllOrderResp ret = new AllOrderResp();
         List<OrderModel> allOrders = orderDao.getOrderByUserid(userid);
-        if (allOrders.size() == 0) {
-            return ret;
-        }
+//        if (allOrders.size() == 0) {
+//            return ret;
+//        }
 
         AllOrderResp.OrderItem orderWtPay = new AllOrderResp.OrderItem();
         orderWtPay.setId(Constant.ORDER_STATUS_WAITFORPAY);
@@ -351,8 +351,8 @@ public class OrderServiceIml implements OrderService {
             }
 
             notDeliver.setBuyrent(BuyRentMapping.getBuyRent(orderModel.getBuy_rent()));
-            notDeliver.setCm(orderModel.getCm());
-            notDeliver.setKg(orderModel.getKg());
+            notDeliver.setCm(address.getCm());
+            notDeliver.setKg(address.getKg());
             notDeliver.setOrderid(orderModel.getOrderid());
             notDeliver.setPaydate(orderModel.getPaydate());
             notDeliver.setProductid(product.getProductid());
@@ -395,6 +395,10 @@ public class OrderServiceIml implements OrderService {
         String orderid = reqConfirmOrder.getOrderid();
         String userid = reqConfirmOrder.getUserid();
         OrderModel order = orderDao.getOrderById(orderid);
+        if(order==null)
+        {
+            return new BaseResponse().setCode(403).setMess("非法操作");
+        }
         if (!order.getUserid().equals(userid)) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }

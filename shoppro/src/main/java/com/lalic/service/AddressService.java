@@ -12,4 +12,5 @@ public interface AddressService {
     void deleteAddress(String addressid);
 
 
+    String getAddressByPhone(String phone);
 }

@@ -36,4 +36,6 @@ public interface AddressDao
                 @Param(value = "cm") String cm,
                 @Param(value = "kg") String kg);
 
+    @Query(value = "SELECT * FROM shop_address WHERE phone=:phone", nativeQuery = true)
+    AddressModel getAddressByPhone(@Param(value = "phone") String phone);
 }

@@ -6,6 +6,7 @@ import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqConfirmRet;
 import com.lalic.model.body.ReqDeliverOrder;
+import com.lalic.service.AddressService;
 import com.lalic.service.OrderService;
 import com.lalic.service.ReturnService;
 
@@ -29,12 +30,19 @@ public class Ops {
     @Autowired
     ReturnService returnService;
 
+    @Autowired
+    AddressService addressService;
+
 
     //单用户所有订单
-    @RequestMapping(value = "/orderbyuserid/{userid}", method = RequestMethod.GET)
-    public BaseResponse orderByUserId(@PathVariable String userid) {
-        AllOrderResp orderByUserid = orderService.getOrderByUserid(userid);
-        return new BaseResponse().setData(orderByUserid);
+    @RequestMapping(value = "/orderbyphone/{phone}", method = RequestMethod.GET)
+    public BaseResponse orderByUserId(@PathVariable String phone) {
+        String userid = addressService.getAddressByPhone(phone);
+        if (userid != null) {
+            AllOrderResp orderByUserid = orderService.getOrderByUserid(userid);
+            return new BaseResponse().setData(orderByUserid);
+        }
+        return new BaseResponse().setMess("未查询到有效数据").setCode(400);
     }
 
     //根据订单id查询单个订单

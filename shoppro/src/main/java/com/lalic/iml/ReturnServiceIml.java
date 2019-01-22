@@ -111,7 +111,8 @@ public class ReturnServiceIml implements ReturnService {
         if (byDeliverNo == null) {
             return new BaseResponse().setMess("未查到该运单: " + makeRet.getDeliverno() + " 对应的订单");
         }
-        return new BaseResponse().setMess("确认成功！").setData(returnDao.confirmRet(makeRet.getMoney(), makeRet.getDeliverno(), sdf.format(new Date())));
+        returnDao.confirmRet(makeRet.getMoney(), makeRet.getDeliverno(), sdf.format(new Date()));
+        return new BaseResponse().setMess("确认成功！");
     }
 
     @Override
