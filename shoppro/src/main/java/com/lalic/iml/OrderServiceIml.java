@@ -175,7 +175,8 @@ public class OrderServiceIml implements OrderService {
         MakeOrderResp ret = new MakeOrderResp();
         ret.setCreateTime(createTime);
         // TODO: 2018/9/8
-        int deliverPrice = DeliverPriceMapping.getPrice("111");
+//        int deliverPrice = DeliverPriceMapping.getPrice("111");
+        int deliverPrice = 0;
         ret.setDeliverPrice("" + deliverPrice);
         ret.setOrderId(order.getOrderid());
         // TODO: 2018/9/8

@@ -37,6 +37,17 @@ public class  AddressModel {
     @Column(name = "kg")
     private String kg="";
 
+    @Column(name = "manager")
+    private String manager="";
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
     public String getCm() {
         return cm;
     }

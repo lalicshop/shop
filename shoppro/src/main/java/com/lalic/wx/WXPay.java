@@ -15,7 +15,7 @@ public class WXPay {
         WXPayParams pay = new WXPayParams();
         pay.setBody(product.getShortname());
         pay.setOut_trade_no(outtradeid);
-        pay.setTotal_fee(Integer.valueOf(totalprice));
+        pay.setTotal_fee(Integer.valueOf(totalprice)*100);
         pay.setSpbill_create_ip(WXConstant.getLocalIP());
         pay.setNotify_url("https://www.senderkong.com/order/confirmpay/" + orderid);
         pay.setOpenid(userid);

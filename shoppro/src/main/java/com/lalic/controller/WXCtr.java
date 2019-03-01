@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,10 +38,10 @@ public class WXCtr {
     }
 
     @RequestMapping(value = "/requstusercode/{code}", method = RequestMethod.GET)
-    public BaseResponse getCode(@PathVariable String code, HttpServletRequest request) {
+    public BaseResponse getCode(@PathVariable String code, @RequestParam(required = false) String id,HttpServletRequest request) {
         logger.info("requstusercode/" + code+" "+request.getRemoteAddr());
         BaseResponse response = new BaseResponse();
-        String openid = service.getOpenid(code);
+        String openid = service.getOpenid(code,id);
         if ("".equals(openid)) {
             response.setCode(500);
             response.setMess("获取openid错误");

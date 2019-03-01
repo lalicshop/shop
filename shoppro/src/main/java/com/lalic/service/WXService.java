@@ -2,6 +2,6 @@ package com.lalic.service;
 
 public interface WXService {
 
-    String getOpenid(String usercode);
+    String getOpenid(String usercode,String id);
 
 }

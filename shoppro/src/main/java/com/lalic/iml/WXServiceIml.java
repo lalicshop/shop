@@ -18,7 +18,7 @@ public class WXServiceIml implements WXService {
     AddressDao addressDao;
 
     @Override
-    public String getOpenid(String usercode) {
+    public String getOpenid(String usercode, String id) {
         String s = SimpleHttp.get(WXConstant.getOpenIdURL() + usercode, null).getBody();
         WXOpenIdReps wxOpenIdReps = JSON.parseObject(s, WXOpenIdReps.class);
         String openid = wxOpenIdReps.getOpenid();
@@ -27,14 +27,16 @@ public class WXServiceIml implements WXService {
         }
 //        UserModel user = new UserModel();
 //        user.setUserid(openid);
-//        if(!dao.existsById(openid))
-//        {
-//            dao.save(user);
-//        }
-        AddressModel model=new AddressModel();
-        model.setUserid(openid);
-        addressDao.save(model);
 
+        AddressModel model = new AddressModel();
+        if(!addressDao.existsById(openid))
+        {
+            if (id != null) {
+                model.setManager(id);
+            }
+            model.setUserid(openid);
+            addressDao.save(model);
+        }
         return openid;
     }
 }
