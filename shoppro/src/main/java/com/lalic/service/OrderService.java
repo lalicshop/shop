@@ -1,6 +1,7 @@
 package com.lalic.service;
 
 import com.lalic.entity.OrderModel;
+import com.lalic.entity.OrderModelExt;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.DeliverResp;
@@ -41,4 +42,8 @@ public interface OrderService {
     BaseResponse opsOrderByDeliverNo(String deliverid);
 
     BaseResponse getWaitConfirmOrder();
+
+    BaseResponse getOrderDetailByUserid(String userid);
+
+    OrderModelExt getOrderdetailById(String orderid);
 }

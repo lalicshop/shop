@@ -10,6 +10,7 @@ import com.lalic.entity.AddressModel;
 import com.lalic.entity.CartModel;
 import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
+import com.lalic.entity.OrderModelExt;
 import com.lalic.entity.ProductModel;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.AllOrderResp;
@@ -182,7 +183,7 @@ public class OrderServiceIml implements OrderService {
         // TODO: 2018/9/8
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(order.getOrderid(),ret.getTotalPrice(), order.getWaitpayid(), order.getUserid(), product);
+        String prepayId = WXPay.makeWXPay(order.getOrderid(), ret.getTotalPrice(), order.getWaitpayid(), order.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
@@ -229,7 +230,7 @@ public class OrderServiceIml implements OrderService {
         ret.setOrderId(orderModel.getOrderid());
         ret.setTotalPrice(price + deliverPrice + "");
         ret.setTotalProductPrice(price + "");
-        String prepayId = WXPay.makeWXPay(orderModel.getOrderid(),orderModel.getTotalprice() + "", orderModel.getWaitpayid(), orderModel.getUserid(), product);
+        String prepayId = WXPay.makeWXPay(orderModel.getOrderid(), orderModel.getTotalprice() + "", orderModel.getWaitpayid(), orderModel.getUserid(), product);
         if ("".equals(prepayId)) {
             return new BaseResponse().setMess("获取支付信息错误").setCode(500);
         }
@@ -361,7 +362,7 @@ public class OrderServiceIml implements OrderService {
             notDeliver.setProductname(product.getDetailname());
             notDeliver.setWxpayid(orderModel.getPayorderid());
             notDeliver.setUsername(address.getUsername());
-            notDeliver.setAddress(address.getProvince()+address.getCity()+address.getDistrict()+address.getDetail());
+            notDeliver.setAddress(address.getProvince() + address.getCity() + address.getDistrict() + address.getDetail());
             notDeliver.setPhone(address.getPhone());
             notDeliver.setCount(orderModel.getQuantity());
             notDelivers.add(notDeliver);
@@ -377,8 +378,15 @@ public class OrderServiceIml implements OrderService {
         DeliverModel deliver = deliverDao.getDeliverByDeliverNo(deliverno);
         if (deliver != null) {
             OrderModel orderModel = orderDao.getOrderById(deliver.getOrderid());
+            OrderModelExt model = new OrderModelExt(orderModel);
+            model.setDecom(deliverDao.getDeliverByDeliverNo(orderModel.getDeliverid()).getCompany());
+            model.setProductname(productDao.getProductById(orderModel.getProductid()).getDetailname());
 
-            return new BaseResponse().setData(orderModel);
+            AddressModel addressByUserId = addressDao.getAddressByUserId(orderModel.getUserid());
+            model.setPhone(addressByUserId.getPhone());
+            model.setKg(addressByUserId.getKg());
+            model.setCm(addressByUserId.getCm());
+            return new BaseResponse().setData(model);
         }
         return new BaseResponse();
     }
@@ -386,7 +394,69 @@ public class OrderServiceIml implements OrderService {
     @Override
     public BaseResponse getWaitConfirmOrder() {
         List<OrderModel> orderByStatus = orderDao.getOrderByStatus(Constant.ORDER_STATUS_DELIVERING);
-        return new BaseResponse().setData(orderByStatus);
+
+        List<OrderModelExt> newlist = new ArrayList<>();
+
+        for (OrderModel byStatus : orderByStatus) {
+            OrderModelExt model = new OrderModelExt(byStatus);
+            model.setDecom(deliverDao.getDeliverByDeliverNo(byStatus.getDeliverid()).getCompany());
+            model.setProductname(productDao.getProductById(byStatus.getProductid()).getDetailname());
+
+            AddressModel addressByUserId = addressDao.getAddressByUserId(byStatus.getUserid());
+            model.setPhone(addressByUserId.getPhone());
+            model.setKg(addressByUserId.getKg());
+            model.setCm(addressByUserId.getCm());
+            newlist.add(model);
+        }
+
+        return new BaseResponse().setData(newlist);
+    }
+
+    @Override
+    public BaseResponse getOrderDetailByUserid(String userid) {
+        BaseResponse ret = new BaseResponse();
+        List<OrderModel> allOrders = orderDao.getOrderByUserid(userid);
+        List<AllOrderResp.OrderItem.InnerItemExt> data = new ArrayList<>();
+        for (OrderModel order : allOrders) {
+            ProductModel productById = productDao.getProductById(order.getProductid());
+            AllOrderResp.OrderItem.InnerItemExt item = new AllOrderResp.OrderItem.InnerItemExt();
+            item.setDate(order.getGeneratedate());
+            item.setDescription(productById.getDetailname());
+            item.setId(order.getOrderid());
+            item.setImage_url(productById.getMainpic());
+            if (order.getDeliverid() != null) {
+                DeliverModel deliverByDeliverNo = deliverDao.getDeliverByDeliverNo(order.getDeliverid());
+                if (deliverByDeliverNo != null) {
+                    item.setDeliverno(order.getDeliverid());
+                    item.setDelcom(deliverByDeliverNo.getCompany());
+                }
+            }
+
+            item.setDeliverdate(order.getDeliverdate());
+            item.setProductid(order.getProductid());
+            item.setPaydate(order.getPaydate());
+            item.setDeliverdate(order.getDeliverdate());
+            item.setReachdate(order.getReachdate());
+            item.setStatus(OrderStatusMapping.getStatus(order.getStatus()));
+
+            data.add(item);
+        }
+        return ret.setData(data);
+    }
+
+    @Override
+    public OrderModelExt getOrderdetailById(String orderid) {
+        OrderModel orderById = orderDao.getOrderById(orderid);
+        OrderModelExt model = new OrderModelExt(orderById);
+        model.setDecom(deliverDao.getDeliverByDeliverNo(orderById.getDeliverid()).getCompany());
+        model.setProductname(productDao.getProductById(orderById.getProductid()).getDetailname());
+        model.setPhone(addressDao.getAddressByUserId(orderById.getUserid()).getPhone());
+
+        AddressModel addressByUserId = addressDao.getAddressByUserId(orderById.getUserid());
+        model.setPhone(addressByUserId.getPhone());
+        model.setKg(addressByUserId.getKg());
+        model.setCm(addressByUserId.getCm());
+        return model;
     }
 
 
@@ -396,8 +466,7 @@ public class OrderServiceIml implements OrderService {
         String orderid = reqConfirmOrder.getOrderid();
         String userid = reqConfirmOrder.getUserid();
         OrderModel order = orderDao.getOrderById(orderid);
-        if(order==null)
-        {
+        if (order == null) {
             return new BaseResponse().setCode(403).setMess("非法操作");
         }
         if (!order.getUserid().equals(userid)) {

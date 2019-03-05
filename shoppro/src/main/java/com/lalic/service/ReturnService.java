@@ -19,4 +19,6 @@ public interface ReturnService {
     BaseResponse getItem(ReqOrder reqOrder, String retid);
 
     BaseResponse returning(String deliverno);
+
+    BaseResponse returnings();
 }

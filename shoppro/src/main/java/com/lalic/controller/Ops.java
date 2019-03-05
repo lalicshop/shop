@@ -1,8 +1,7 @@
 package com.lalic.controller;
 
-import com.lalic.entity.OrderModel;
+import com.lalic.entity.OrderModelExt;
 import com.lalic.model.BaseResponse;
-import com.lalic.model.body.AllOrderResp;
 import com.lalic.model.body.ReqConfirmOrder;
 import com.lalic.model.body.ReqConfirmRet;
 import com.lalic.model.body.ReqDeliverOrder;
@@ -39,8 +38,7 @@ public class Ops {
     public BaseResponse orderByUserId(@PathVariable String phone) {
         String userid = addressService.getAddressByPhone(phone);
         if (userid != null) {
-            AllOrderResp orderByUserid = orderService.getOrderByUserid(userid);
-            return new BaseResponse().setData(orderByUserid);
+            return orderService.getOrderDetailByUserid(userid);
         }
         return new BaseResponse().setMess("未查询到有效数据").setCode(400);
     }
@@ -48,7 +46,7 @@ public class Ops {
     //根据订单id查询单个订单
     @RequestMapping(value = "/orderbyorderid/{orderid}", method = RequestMethod.GET)
     public BaseResponse OrderByOrderId(@PathVariable String orderid) {
-        OrderModel orderById = orderService.getOrderById(orderid);
+        OrderModelExt orderById = orderService.getOrderdetailById(orderid);
         return new BaseResponse().setData(orderById);
     }
 
@@ -95,6 +93,13 @@ public class Ops {
     @RequestMapping(value = "/returning/{deliverno}", method = RequestMethod.GET)
     public BaseResponse returning(@PathVariable String deliverno) {
         return returnService.returning(deliverno);
+    }
+
+
+    //正在归还的列表
+    @RequestMapping(value = "/returnings", method = RequestMethod.GET)
+    public BaseResponse returnings() {
+        return returnService.returnings();
     }
 
 

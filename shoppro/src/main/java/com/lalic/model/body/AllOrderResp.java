@@ -112,5 +112,68 @@ public class AllOrderResp {
                 this.description = description;
             }
         }
+
+        public static class InnerItemExt extends InnerItem {
+
+            private String productid;
+
+            private String delcom;
+
+            private String deliverno;
+
+            private String paydate;
+
+            private String deliverdate;
+
+            private String reachdate;
+
+            public String getProductid() {
+                return productid;
+            }
+
+            public void setProductid(String productid) {
+                this.productid = productid;
+            }
+
+            public String getDelcom() {
+                return delcom;
+            }
+
+            public void setDelcom(String delcom) {
+                this.delcom = delcom;
+            }
+
+            public String getDeliverno() {
+                return deliverno;
+            }
+
+            public void setDeliverno(String deliverno) {
+                this.deliverno = deliverno;
+            }
+
+            public String getPaydate() {
+                return paydate;
+            }
+
+            public void setPaydate(String paydate) {
+                this.paydate = paydate;
+            }
+
+            public String getDeliverdate() {
+                return deliverdate;
+            }
+
+            public void setDeliverdate(String deliverdate) {
+                this.deliverdate = deliverdate;
+            }
+
+            public String getReachdate() {
+                return reachdate;
+            }
+
+            public void setReachdate(String reachdate) {
+                this.reachdate = reachdate;
+            }
+        }
     }
 }

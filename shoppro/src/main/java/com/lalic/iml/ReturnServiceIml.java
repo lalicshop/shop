@@ -8,6 +8,7 @@ import com.lalic.entity.DeliverModel;
 import com.lalic.entity.OrderModel;
 import com.lalic.entity.ProductModel;
 import com.lalic.entity.ReturnModel;
+import com.lalic.entity.ReturnModelExt;
 import com.lalic.model.BaseResponse;
 import com.lalic.model.body.ReqConfirmRet;
 import com.lalic.model.body.ReqMakeRet;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -145,6 +147,26 @@ public class ReturnServiceIml implements ReturnService {
     public BaseResponse returning(String deliverno) {
         ReturnModel byDeliverNo = returnDao.findByDeliverNo(deliverno);
         return new BaseResponse().setData(byDeliverNo);
+    }
+
+    @Override
+    public BaseResponse returnings() {
+        List<ReturnModel> returnings = returnDao.returnings();
+        List<ReturnModelExt> ret=new ArrayList<>();
+        for (ReturnModel returning : returnings) {
+            ReturnModelExt model = new ReturnModelExt(returning);
+            OrderModel order = orderDao.getOrderById(returning.getOrderid());
+            if (order != null) {
+                model.setProductid(order.getProductid());
+                ProductModel productById = productDao.getProductById(order.getProductid());
+                if (productById != null) {
+                    model.setProductname(productById.getDetailname());
+                }
+            }
+            ret.add(model);
+        }
+
+        return new BaseResponse().setData(ret);
     }
 
 }

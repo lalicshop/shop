@@ -20,9 +20,12 @@ public interface ReturnDao
     @Modifying
     @Query(value = "UPDATE shop_return SET isretmoney=1,money=:money,reachdate=:reachdate,`status`=6 WHERE deliverno=:deliverno", nativeQuery = true)
     int confirmRet(@Param(value = "money") String money,
-                                 @Param(value = "deliverno") String deliverno,
-                                 @Param(value = "reachdate") String reachdate);
+                   @Param(value = "deliverno") String deliverno,
+                   @Param(value = "reachdate") String reachdate);
 
     @Query(value = "SELECT * FROM shop_return WHERE deliverno=:deliverno", nativeQuery = true)
     ReturnModel findByDeliverNo(@Param(value = "deliverno") String deliverno);
+
+    @Query(value = "SELECT * FROM shop_return WHERE `status`=5", nativeQuery = true)
+    List<ReturnModel> returnings();
 }
